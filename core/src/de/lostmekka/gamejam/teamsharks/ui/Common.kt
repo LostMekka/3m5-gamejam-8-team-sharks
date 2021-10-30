@@ -1,3 +1,5 @@
+package de.lostmekka.gamejam.teamsharks.ui
+
 import com.badlogic.gdx.graphics.Color
 import com.kotcrab.vis.ui.widget.VisLabel
 import ktx.scene2d.scene2d
