@@ -26,6 +26,10 @@ class Factory {
         machines -= pos
     }
 
+    operator fun plusAssign(itemType: ItemType) {
+        machines.values.find { it.itemType == itemType }?.upgrade()
+    }
+
     operator fun get(resourceType: ResourceType) = inventory.getValue(resourceType)
     operator fun contains(resourceAmount: ResourceAmount): Boolean {
         val (type, amount) = resourceAmount

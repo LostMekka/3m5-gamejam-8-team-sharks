@@ -6,11 +6,26 @@ import de.lostmekka.gamejam.teamsharks.util.Timer
 class Machine(
     val itemType: ItemType,
     val position: GridPosition,
-    val name: String,
+    var name: String,
     val consumedResources: ResourceAmount,
     val producedResources: ResourceAmount,
-    val workDuration: Float,
+    var workDuration: Float,
+    var tier: Int,
 ) {
+    private val namePrefix = listOf(
+        "Better",
+        "Upgraded",
+        "Super",
+        "Duper",
+        "Puper",
+        "Epic",
+        "Mythical",
+        "Legendary",
+    )
+
+    operator fun get(name: String): String =
+        (namePrefix[tier % namePrefix.size] + ' ').repeat(tier / namePrefix.size) + name
+
     public var isWorking = false
         private set
 
@@ -36,5 +51,11 @@ class Machine(
                 }
             }
         }
+    }
+
+    fun upgrade() {
+        tier++
+        workDuration *= 0.9f
+        timer.updateTime = workDuration
     }
 }
