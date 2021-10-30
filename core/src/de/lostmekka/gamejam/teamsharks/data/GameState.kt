@@ -15,4 +15,8 @@ class GameState {
         if (factory.inStock(resourceType) >= amount)
             factory.removeFromInventory(resourceType, amount)
     }
+
+    fun update(deltaTime: Float) {
+        // TODO: implement
+    }
 }

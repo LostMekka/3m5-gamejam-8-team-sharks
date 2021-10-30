@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import de.lostmekka.gamejam.teamsharks.helper.ifKeyPressed
 import de.lostmekka.gamejam.teamsharks.helper.rect
@@ -65,8 +66,12 @@ class GameplayScreen : KtxScreen {
     private val gameplayCamera = OrthographicCamera()
     private val gameplayViewport = ScreenViewport(gameplayCamera)
 
+    private val state = GameState()
+
     override fun render(delta: Float) {
         ifKeyPressed(Input.Keys.ESCAPE) { Gdx.app.exit() }
+
+        state.update(delta)
 
         shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameplayCamera) {
             for (x in 0 until gridSize.x) {
