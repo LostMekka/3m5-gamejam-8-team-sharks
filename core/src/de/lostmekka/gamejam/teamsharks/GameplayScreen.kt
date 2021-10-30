@@ -13,6 +13,9 @@ import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
 import de.lostmekka.gamejam.teamsharks.data.GameState
+import de.lostmekka.gamejam.teamsharks.data.Machine
+import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
+import de.lostmekka.gamejam.teamsharks.data.times
 import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import de.lostmekka.gamejam.teamsharks.helper.ifKeyPressed
 import de.lostmekka.gamejam.teamsharks.helper.rect
@@ -68,7 +71,7 @@ class GameplayScreen : KtxScreen {
     override fun render(delta: Float) {
         ifKeyPressed(Input.Keys.ESCAPE) { Gdx.app.exit() }
 
-        ifKeyPressed(Input.Keys.A) { state.sellResource(ResourceType.IronOre, 1) }
+        ifKeyPressed(Input.Keys.A) { state.sellResource(1 * ResourceType.IronOre) }
 
         state.update(delta)
 
@@ -88,14 +91,57 @@ class GameplayScreen : KtxScreen {
                 it.draw(sprites.resourceIcons[resourceType], 10f, 50f + 40f * i)
             }
         }
+
+        for (x in 0 until gridSize.x) {
+            for (y in 0 until gridSize.y) {
+                val cell = cell(x, y)
+                if (cell.pos in inventorySpace) continue
+                val machine = state.factory[cell.pos]
+                if (machine == null) {
+                    renderEmptyCell(cell.rect) { state.buyMachine(cell.pos, createMachine()) }
+                } else {
+                    renderMachineCell(cell.rect, machine) { machine.upgrade() }
+                }
+            }
+        }
+        val inventoryContent = ResourceType.values().map { state.factory[it] * it }
+        renderInventory(inventorySpace.rect, inventoryContent) { state.sellResource(it) }
+        // TODO: better logic for bribe cost and effect
+        renderStaticGui(state.money, state.enemyAwareness, 10) { state.enemyAwareness *= 0.5f }
     }
 
-    fun checkButtons() {
-        // TODO: Add triggers
-        // sell item/s
-        state.sellResource(ResourceType.IronOre, 1)
-        // upgrade/buy machine
-        state.upgradeMachine(GridPosition(0, 0))
+    fun createMachine(): Machine = TODO()
+
+    fun renderEmptyCell(
+        rect: Rectangle,
+        onBuyClicked: () -> Unit,
+    ) {
+        // TODO: implement
+    }
+
+    fun renderMachineCell(
+        rect: Rectangle,
+        machine: Machine,
+        onUpgradeClicked: () -> Unit,
+    ) {
+        // TODO: implement
+    }
+
+    fun renderInventory(
+        rect: Rectangle,
+        content: List<ResourceAmount>,
+        onSellClicked: (ResourceAmount) -> Unit,
+    ) {
+        // TODO: implement
+    }
+
+    fun renderStaticGui(
+        money: Int,
+        awareness: Float,
+        bribeCost: Int,
+        onBribeClicked: () -> Unit,
+    ) {
+        // TODO: implement
     }
 
     override fun resize(width: Int, height: Int) {

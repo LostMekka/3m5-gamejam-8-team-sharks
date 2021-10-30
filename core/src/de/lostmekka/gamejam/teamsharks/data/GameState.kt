@@ -14,10 +14,11 @@ class GameState {
     )
     val currentResourceDeposits = mutableListOf<ResourceDeposit>()
 
-    fun sellResource(resourceType: ResourceType, amount: Int) {
-        if (factory[resourceType] >= amount) {
-            factory -= amount * resourceType
-            money += resourceType.ordinal
+    fun sellResource(resourceAmount: ResourceAmount) {
+        val (type, amount) = resourceAmount
+        if (factory[type] >= amount) {
+            factory -= amount * type
+            money += amount * resourcePrices.getOrDefault(type, 1)
         }
     }
 
