@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = '1.3.41'
+    ext.kotlinVersion = '1.5.31'
 
     repositories {
         mavenLocal()
@@ -27,6 +27,7 @@ allprojects {
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.1.0'
+        ktxVersion = '1.10.0-b4'
     }
 
     repositories {
@@ -42,7 +43,6 @@ allprojects {
 project(":desktop") {
     apply plugin: "kotlin"
 
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -57,7 +57,6 @@ project(":desktop") {
 project(":core") {
     apply plugin: "kotlin"
 
-
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
@@ -68,13 +67,25 @@ project(":core") {
         api "net.dermetfan.libgdx-utils:libgdx-utils:0.13.4"
         api "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.4"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        api "io.github.libktx:ktx-actors:$ktxVersion"
+        api "io.github.libktx:ktx-app:$ktxVersion"
+        api "io.github.libktx:ktx-ashley:$ktxVersion"
+        api "io.github.libktx:ktx-assets:$ktxVersion"
+        api "io.github.libktx:ktx-assets-async:$ktxVersion"
+        api "io.github.libktx:ktx-async:$ktxVersion"
+        api "io.github.libktx:ktx-box2d:$ktxVersion"
+        api "io.github.libktx:ktx-collections:$ktxVersion"
+        api "io.github.libktx:ktx-freetype:$ktxVersion"
+        api "io.github.libktx:ktx-freetype-async:$ktxVersion"
+        api "io.github.libktx:ktx-graphics:$ktxVersion"
+        api "io.github.libktx:ktx-log:$ktxVersion"
     }
 }
 
 project(":ios") {
     apply plugin: "kotlin"
     apply plugin: "robovm"
-
 
     dependencies {
         implementation project(":core")
