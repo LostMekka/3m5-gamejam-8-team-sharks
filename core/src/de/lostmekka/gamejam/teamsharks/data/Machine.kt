@@ -20,20 +20,13 @@ class Machine(
         return progress.isMax()
     }
 
-    fun upgrade(
-        name: String,
-        consumableResource: ResourceType,
-        producibleResource: ResourceType,
-        amountToConsume: Int,
-        amountToProduce: Int,
-        progressDuration: Float,
-    ) {
-        this.name = name
-        this.consumableResource = consumableResource
-        this.producibleResource = producibleResource
-        this.amountToConsume = amountToConsume
-        this.amountToProduce = amountToProduce
-        this.progressDuration = progressDuration
+    fun upgrade(newMachine: Machine) {
+        name = newMachine.name
+        consumableResource = newMachine.consumableResource
+        producibleResource = newMachine.producibleResource
+        amountToConsume = newMachine.amountToConsume
+        amountToProduce = newMachine.amountToProduce
+        progressDuration = newMachine.progressDuration
         progress.updateTime = progressDuration
         progress.reset()
     }

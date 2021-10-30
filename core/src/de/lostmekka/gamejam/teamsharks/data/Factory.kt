@@ -2,7 +2,7 @@ package de.lostmekka.gamejam.teamsharks.data
 
 class Factory {
     val inventory = mutableMapOf<ResourceType, Int>().withDefault { 0 }
-    private val machines: List<Machine> = listOf()
+    private val machines = mutableListOf<Machine>()
 
     fun update(timePassed: Float) {
         machines.forEach {
@@ -12,25 +12,9 @@ class Factory {
             }
         }
     }
-    // TODO: change parameters
-    fun upgrade(
-        fromType: ItemType,
-        name: String,
-        consumableResource: ResourceType,
-        producibleResource: ResourceType,
-        amountToConsume: Int,
-        amountToProduce: Int,
-        progressDuration: Float,
-    ) {
-        machines
-            .find { it.itemType == fromType }
-            ?.upgrade(
-                name = name,
-                consumableResource = consumableResource,
-                producibleResource = producibleResource,
-                amountToConsume = amountToConsume,
-                amountToProduce = amountToProduce,
-                progressDuration = progressDuration,
-            )
+
+    fun insert(newMachine: Machine) {
+        val machine = machines.find { it.itemType == newMachine.itemType }
+        machine?.upgrade(newMachine) ?: machines.add(newMachine)
     }
 }
