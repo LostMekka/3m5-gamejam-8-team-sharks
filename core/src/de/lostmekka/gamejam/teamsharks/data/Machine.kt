@@ -7,10 +7,9 @@ class Machine(
     val machineType: MachineType,
     val position: GridPosition,
     var name: String,
-    val consumedResources: ResourceAmount,
-    val producedResources: ResourceAmount,
-    var workDuration: Float,
+    val recipes: List<Recipe>,
     var tier: Int,
+    var speedModifier: Float,
 ) {
     private val namePrefix = listOf(
         "Better",
@@ -26,36 +25,36 @@ class Machine(
     operator fun get(name: String): String =
         (namePrefix[tier % namePrefix.size] + ' ').repeat(tier / namePrefix.size) + name
 
-    public var isWorking = false
+    public val isWorking get() = currentRecipe != null
+    public var progress = 0f
         private set
 
-    public val progress get() = timer.progress
-
-    private val timer = Timer(workDuration)
+    private var currentRecipe: Recipe? = null
 
     fun update(deltaTime: Float, factory: Factory) {
-        if (!isWorking && consumedResources in factory) {
-            factory -= consumedResources
-            isWorking = true
-        }
-        if (isWorking) {
-            var batchesFinished = timer.increment(deltaTime)
-            while (batchesFinished > 0) {
-                batchesFinished--
-                factory += producedResources
-                if (consumedResources in factory) {
-                    factory -= consumedResources
-                } else {
-                    isWorking = false
-                    break
-                }
+        if (currentRecipe == null) startRandomRecipe(factory)
+        var timeLeft = deltaTime
+        while (currentRecipe != null && timeLeft > 0f) {
+            val recipe = currentRecipe!!
+            val progressLeft = 1f - progress
+            val possibleProgress = timeLeft * speedModifier / recipe.baseDuration
+            if (possibleProgress < progressLeft) {
+                progress += possibleProgress
+                timeLeft = 0f
+            } else {
+                progress = 0f
+                timeLeft -= timeLeft * progressLeft / possibleProgress
+                recipe.producedResources.forEach { factory += it }
+                startRandomRecipe(factory)
             }
         }
     }
 
-    fun upgrade() {
-        tier++
-        workDuration *= 0.9f
-        timer.updateTime = workDuration
+    private fun startRandomRecipe(factory: Factory) {
+        val recipe = recipes
+            .filter { recipe -> recipe.consumedResources.all { it in factory } }
+            .randomOrNull()
+        recipe?.consumedResources?.forEach { factory -= it }
+        currentRecipe = recipe
     }
 }

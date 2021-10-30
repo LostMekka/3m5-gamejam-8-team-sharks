@@ -18,10 +18,20 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
                     machineType = MachineType.Smelter,
                     position = pos,
                     name = "Smelter",
-                    consumedResources = 2 * ResourceType.IronOre,
-                    producedResources = 1 * ResourceType.IronIngot,
-                    workDuration = (6f - tier) * 2f,
+                    recipes = listOf(
+                        Recipe(
+                            consumedResources = listOf(2 * ResourceType.IronOre),
+                            producedResources = listOf(1 * ResourceType.IronIngot),
+                            baseDuration = 10f,
+                        ),
+                        Recipe(
+                            consumedResources = listOf(2 * ResourceType.CopperOre),
+                            producedResources = listOf(1 * ResourceType.CopperIngot),
+                            baseDuration = 10f,
+                        ),
+                    ),
                     tier = tier,
+                    speedModifier = 1f / tier,
                 )
             }
         )

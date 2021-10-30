@@ -91,10 +91,10 @@ class GameplayScreen : KtxScreen {
         }
         ifKeyPressed(Input.Keys.W) {
             val pos = GridPosition(0, 0)
-            val tier = state.factory[pos]!!.tier
+            val machine = state.factory[pos]
             machineBlueprints
                 .getValue(MachineType.Smelter)
-                .getOrNull(tier)
+                .getOrNull(machine?.tier ?: -1)
                 ?.also { state.upgradeMachine(pos, it) }
         }
 
