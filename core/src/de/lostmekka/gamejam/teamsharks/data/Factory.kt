@@ -17,4 +17,12 @@ class Factory {
         val machine = machines.find { it.itemType == newMachine.itemType }
         machine?.upgrade(newMachine) ?: machines.add(newMachine)
     }
+
+    fun inStock(resourceType: ResourceType) = inventory[resourceType] ?: 0
+
+    fun removeFromInventory(resourceType: ResourceType, amount: Int) {
+        var currentAmount = inventory[resourceType] ?: 0
+        if (currentAmount >= amount) currentAmount -= amount
+        inventory[resourceType] = currentAmount
+    }
 }
