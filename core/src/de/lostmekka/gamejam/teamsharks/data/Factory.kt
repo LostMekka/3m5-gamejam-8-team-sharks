@@ -6,11 +6,11 @@ class Factory {
     private val inventory = mutableMapOf<ResourceType, Int>().withDefault { 0 }
     private val machines = mutableMapOf<GridPosition, Machine>()
     var depth = 0f
-    var speed = 0.1f
+    var drillingSpeed = 5f
     var miningSpeed = 1f
 
     fun update(deltaTime: Float, deposits: List<ResourceDeposit>) {
-        depth += speed * deltaTime
+        depth += drillingSpeed * deltaTime
         machines.values.forEach { it.update(deltaTime, this) }
         val coveringHeightRange = (depth - GameConstants.gridSize.y)..depth
         deposits

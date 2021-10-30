@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.kotcrab.vis.ui.VisUI
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.grid
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
 import de.lostmekka.gamejam.teamsharks.data.GameState
@@ -83,6 +85,8 @@ class GameplayScreen : KtxScreen {
         ifKeyPressed(Input.Keys.ESCAPE) { Gdx.app.exit() }
 
         // TODO: remove these debug cheat keys
+        ifKeyPressed(Input.Keys.NUM_9) { state.factory.drillingSpeed = 100f }
+        ifKeyPressed(Input.Keys.NUM_0) { state.factory.drillingSpeed = 5f }
         ifKeyPressed(Input.Keys.NUM_1) { state.factory += 100 * ResourceType.IronOre }
         ifKeyPressed(Input.Keys.NUM_2) { state.sellResource(1 * ResourceType.IronOre) }
         ifKeyPressed(Input.Keys.Q) {
@@ -103,7 +107,28 @@ class GameplayScreen : KtxScreen {
         state.update(delta)
         stage.act(delta)
 
+        spriteBatch.use(gameplayCamera) {
+            val dirtSize = dirtLayerScale.toFloat()
+            for (x in 0..(Gdx.graphics.width / dirtLayerScale)) {
+                for (y in 0..(Gdx.graphics.height / dirtLayerScale + 1)) {
+                    it.color = Color.WHITE // TODO: use noise
+                    it.draw(
+                        sprites.backgroundEarth,
+                        x * dirtSize - Gdx.graphics.width / 2f,
+                        (y - 1) * dirtSize + state.dirtLayerOffset - Gdx.graphics.height / 2f,
+                        dirtSize,
+                        dirtSize,
+                    )
+                }
+            }
+        }
+
+        shapeRenderer.use(ShapeRenderer.ShapeType.Filled) {
+            it.color = Color.BLACK
+            it.rect(grid.rect)
+        }
         shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameplayCamera) {
+            it.color = Color.WHITE
             for (x in 0 until gridSize.x) {
                 for (y in 0 until gridSize.y) {
                     val cell = cell(x, y)

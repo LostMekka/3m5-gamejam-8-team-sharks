@@ -9,6 +9,9 @@ object GameConstants {
     val grid = GridSection(0, 0, gridSize)
     val inventorySpace = GridSection(0, 5, 3 by 5)
 
+    val dirtLayerScale = 64
+    val dirtLayerColorVariance = 0.2f
+
     val resourcePrices = mutableMapOf(
         ResourceType.IronOre to 1,
         ResourceType.CopperOre to 2,
