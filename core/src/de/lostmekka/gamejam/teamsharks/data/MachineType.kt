@@ -1,6 +1,6 @@
 package de.lostmekka.gamejam.teamsharks.data
 
-enum class ItemType {
+enum class MachineType {
     OreCrusher,
     Drill,
     Smelter,

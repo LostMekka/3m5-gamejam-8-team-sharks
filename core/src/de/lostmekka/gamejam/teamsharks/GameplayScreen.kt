@@ -13,7 +13,6 @@ import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
 import de.lostmekka.gamejam.teamsharks.data.GameState
-import de.lostmekka.gamejam.teamsharks.data.ItemType
 import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import de.lostmekka.gamejam.teamsharks.helper.ifKeyPressed
 import de.lostmekka.gamejam.teamsharks.helper.rect
@@ -69,7 +68,7 @@ class GameplayScreen : KtxScreen {
     override fun render(delta: Float) {
         ifKeyPressed(Input.Keys.ESCAPE) { Gdx.app.exit() }
 
-        ifKeyPressed(Input.Keys.A) { state.sell(ResourceType.IronOre, 1) }
+        ifKeyPressed(Input.Keys.A) { state.sellResource(ResourceType.IronOre, 1) }
 
         state.update(delta)
 
@@ -94,9 +93,9 @@ class GameplayScreen : KtxScreen {
     fun checkButtons() {
         // TODO: Add triggers
         // sell item/s
-        state.sell(ResourceType.IronOre, 1)
+        state.sellResource(ResourceType.IronOre, 1)
         // upgrade/buy machine
-        state.upgrade(GridPosition(0, 0))
+        state.upgradeMachine(GridPosition(0, 0))
     }
 
     override fun resize(width: Int, height: Int) {

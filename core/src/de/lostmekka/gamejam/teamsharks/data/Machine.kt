@@ -4,7 +4,7 @@ import de.lostmekka.gamejam.teamsharks.util.GridPosition
 import de.lostmekka.gamejam.teamsharks.util.Timer
 
 class Machine(
-    val itemType: ItemType,
+    val machineType: MachineType,
     val position: GridPosition,
     var name: String,
     val consumedResources: ResourceAmount,
