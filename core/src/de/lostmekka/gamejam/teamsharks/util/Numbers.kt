@@ -1,38 +1,34 @@
 package de.lostmekka.gamejam.teamsharks.util
 
 
-class Progress(
+class Timer(
     var updateTime: Float,
 ) {
-    private val max = 101
-    private var current = 0
     private var passedTime = 0f
+
+    val progress = passedTime / updateTime
 
     fun increment(value: Float): Int {
         passedTime += value
-        if (passedTime >= updateTime) {
-            passedTime = 0f
-            current = (++current % max)
+        var finished = 0
+        while (passedTime >= updateTime) {
+            passedTime -= updateTime
+            finished++
         }
-        return current
+        return finished
     }
 
     fun decrement(value: Float): Int {
         passedTime -= value
-
-        if (passedTime <= 0f)
-            passedTime = 0f
-
-        if (current - 1 >= 0)
-            --current
-
-        return current
+        var finished = 0
+        while (passedTime < 0f) {
+            passedTime -= updateTime
+            finished++
+        }
+        return finished
     }
 
-    fun isMax() = current == max - 1
-
     fun reset() {
-        current = 0
         passedTime = 0f
     }
 }

@@ -7,15 +7,15 @@ class Factory {
     private val machines = mutableMapOf<GridPosition, Machine>()
     var depth = 0f
     var speed = 0.1f
+    var miningSpeed = 1f
 
-    fun update(deltaTime: Float) {
-        machines.values.forEach {
-            if (it.update(deltaTime) && inventory[it.consumableResource] == it.amountConsumed) {
-                inventory[it.consumableResource]?.minus(it.amountConsumed)
-                inventory[it.producibleResource]?.plus(it.amountProduced) ?: it.amountProduced
-            }
-        }
-        depth += speed
+    fun update(deltaTime: Float, deposits: List<ResourceDeposit>) {
+        depth += speed * deltaTime
+        machines.values.forEach { it.update(deltaTime, this) }
+        val coveringHeightRange = (depth - GameConstants.gridSize.y)..depth
+        deposits
+            .filter { it touches coveringHeightRange }
+            .forEach { this += it.update(deltaTime, miningSpeed) }
     }
 
     operator fun get(pos: GridPosition) = machines[pos]
@@ -27,6 +27,10 @@ class Factory {
     }
 
     operator fun get(resourceType: ResourceType) = inventory.getValue(resourceType)
+    operator fun contains(resourceAmount: ResourceAmount): Boolean {
+        val (type, amount) = resourceAmount
+        return inventory.getValue(type) >= amount
+    }
     operator fun plusAssign(resourceAmount: ResourceAmount) {
         val (type, amount) = resourceAmount
         inventory[type] = inventory.getValue(type) + amount
@@ -36,17 +40,5 @@ class Factory {
         val currAmount = inventory.getValue(type)
         require(currAmount >= amount) { "tried to subtract $amount $type, but inventory only has $currAmount" }
         inventory[type] = currAmount - amount
-    }
-
-    fun proceedLayer(layer: SoilLayer) {
-        machines.values.find { it.itemType == ItemType.OreCrusher }?.let { crusher ->
-            if (crusher.isReady()) {
-                layer.resources.forEach { resource ->
-                    inventory[resource] = inventory[resource]
-                        ?.plus(crusher.amountProduced)
-                        ?: crusher.amountProduced
-                }
-            }
-        }
     }
 }

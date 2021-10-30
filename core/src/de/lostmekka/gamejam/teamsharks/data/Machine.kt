@@ -1,35 +1,40 @@
 package de.lostmekka.gamejam.teamsharks.data
 
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
-import de.lostmekka.gamejam.teamsharks.util.Progress
+import de.lostmekka.gamejam.teamsharks.util.Timer
 
 class Machine(
     val itemType: ItemType,
     val position: GridPosition,
-    var name: String,
-    var consumableResource: ResourceType,
-    var producibleResource: ResourceType,
-    var amountConsumed: Int,
-    var amountProduced: Int,
-    var progressDuration: Float,
+    val name: String,
+    val consumedResources: ResourceAmount,
+    val producedResources: ResourceAmount,
+    val workDuration: Float,
 ) {
-    private val progress = Progress(progressDuration)
+    public var isWorking = false
+        private set
 
-    fun update(timePassed: Float): Boolean {
-        progress.increment(timePassed)
-        return progress.isMax()
+    public val progress get() = timer.progress
+
+    private val timer = Timer(workDuration)
+
+    fun update(deltaTime: Float, factory: Factory) {
+        if (!isWorking && consumedResources in factory) {
+            factory -= consumedResources
+            isWorking = true
+        }
+        if (isWorking) {
+            var batchesFinished = timer.increment(deltaTime)
+            while (batchesFinished > 0) {
+                batchesFinished--
+                factory += producedResources
+                if (consumedResources in factory) {
+                    factory -= consumedResources
+                } else {
+                    isWorking = false
+                    break
+                }
+            }
+        }
     }
-
-    fun upgrade(newMachine: Machine) {
-        name = newMachine.name
-        consumableResource = newMachine.consumableResource
-        producibleResource = newMachine.producibleResource
-        amountConsumed = newMachine.amountConsumed
-        amountProduced = newMachine.amountProduced
-        progressDuration = newMachine.progressDuration
-        progress.updateTime = progressDuration
-        progress.reset()
-    }
-
-    fun isReady() = progress.isMax()
 }
