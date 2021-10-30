@@ -12,11 +12,11 @@ class GameState {
     )
 
     fun sell(resourceType: ResourceType, amount: Int) {
-        if (factory.inStock(resourceType) >= amount)
-            factory.removeFromInventory(resourceType, amount)
+        if (factory[resourceType] >= amount) factory -= amount * resourceType
     }
 
     fun update(deltaTime: Float) {
+        factory.update(deltaTime)
         // TODO: implement
     }
 }

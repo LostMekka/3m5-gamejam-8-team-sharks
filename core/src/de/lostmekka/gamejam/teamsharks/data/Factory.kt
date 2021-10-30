@@ -1,28 +1,37 @@
 package de.lostmekka.gamejam.teamsharks.data
 
-class Factory {
-    val inventory = mutableMapOf<ResourceType, Int>().withDefault { 0 }
-    private val machines = mutableListOf<Machine>()
+import de.lostmekka.gamejam.teamsharks.util.GridPosition
 
-    fun update(timePassed: Float) {
-        machines.forEach {
-            if (it.update(timePassed) && inventory[it.consumableResource] == it.amountToConsume) {
+class Factory {
+    private val inventory = mutableMapOf<ResourceType, Int>().withDefault { 0 }
+    private val machines = mutableMapOf<GridPosition, Machine>()
+
+    fun update(deltaTime: Float) {
+        machines.values.forEach {
+            if (it.update(deltaTime) && inventory[it.consumableResource] == it.amountToConsume) {
                 inventory[it.consumableResource]?.minus(it.amountToConsume)
                 inventory[it.producibleResource]?.plus(it.amountToProduce) ?: it.amountToProduce
             }
         }
     }
 
-    fun insert(newMachine: Machine) {
-        val machine = machines.find { it.itemType == newMachine.itemType }
-        machine?.upgrade(newMachine) ?: machines.add(newMachine)
+    operator fun get(pos: GridPosition) = machines[pos]
+    operator fun set(pos: GridPosition, machine: Machine) {
+        machines[pos] = machine
+    }
+    operator fun minusAssign(pos: GridPosition) {
+        machines -= pos
     }
 
-    fun inStock(resourceType: ResourceType) = inventory[resourceType] ?: 0
-
-    fun removeFromInventory(resourceType: ResourceType, amount: Int) {
-        var currentAmount = inventory[resourceType] ?: 0
-        if (currentAmount >= amount) currentAmount -= amount
-        inventory[resourceType] = currentAmount
+    operator fun get(resourceType: ResourceType) = inventory.getValue(resourceType)
+    operator fun plusAssign(resourceAmount: ResourceAmount) {
+        val (type, amount) = resourceAmount
+        inventory[type] = inventory.getValue(type) + amount
+    }
+    operator fun minusAssign(resourceAmount: ResourceAmount) {
+        val (type, amount) = resourceAmount
+        val currAmount = inventory.getValue(type)
+        require(currAmount >= amount) { "tried to subtract $amount $type, but inventory only has $currAmount" }
+        inventory[type] = currAmount - amount
     }
 }

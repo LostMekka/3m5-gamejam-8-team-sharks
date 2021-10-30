@@ -7,3 +7,10 @@ enum class ResourceType {
     CopperIngot,
     //...
 }
+
+data class ResourceAmount(
+    val resourceType: ResourceType,
+    val amount: Int,
+)
+
+operator fun Int.times(resourceType: ResourceType) = ResourceAmount(resourceType, this)
