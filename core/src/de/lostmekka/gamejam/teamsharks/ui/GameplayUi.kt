@@ -1,103 +1,64 @@
 package de.lostmekka.gamejam.teamsharks.ui
 
+import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.kotcrab.vis.ui.widget.VisLabel
-import com.kotcrab.vis.ui.widget.VisProgressBar
+import com.kotcrab.vis.ui.widget.VisTable
 import de.lostmekka.gamejam.teamsharks.data.GameState
-import ktx.actors.txt
-import ktx.scene2d.*
+import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
+import ktx.actors.onClick
 import ktx.scene2d.vis.*
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
+import de.lostmekka.gamejam.teamsharks.data.times
+import ktx.actors.minusAssign
+import ktx.actors.plusAssign
+import ktx.scene2d.scene2d
+import ktx.scene2d.scrollPane
+import ktx.scene2d.table
 
-class GameplayUi(stage: Stage) {
-    fun update(state: GameState) {
-        awarenessBar.update(state.enemyAwareness)
-        moneyLabel.update(state.money)
+class GameplayUi {
+    private var staticUi : Actor? = null
+    fun renderStaticUi(stage: Stage, state: GameState) {
+        staticUi?.let { stage -= it }
+        stage += createStaticUi(stage, state).also { staticUi = it }
     }
 
-    private val bribeButton: KVisTextButton
-    private val awarenessBar: Awareness
-    private val moneyLabel : Money
+    private var inventory : Actor? = null
+    fun renderInventory(stage: Stage, rect: Rectangle, content: List<ResourceAmount>, onSellClicked: (ResourceAmount) -> Unit) {
+        inventory?.let { stage -= it }
+        stage += scene2d.scrollPane {
+            setPosition(rect.x, rect.y)
+            setSize(rect.width, rect.height)
 
-    init {
-        stage.actors {
-            visTable() {
-                setSize(stage.width, stage.height)
+            visTable(true) {
+                pad(10f)
 
-                visTable {
-                    it.expandX().fillX().row()
-                    it.padTop(100f)
+                visLabel("Inventory")
+                row()
 
-                    money(0) {
-                        it.padRight(200f)
-                    }.also { moneyLabel = it }
-                    awareness {
-                        it.padRight(200f)
-                    }.also { awarenessBar = it }
+                for (a in content) {
+                    visLabel(a.resourceType.name) { it.expandX().fillX() }
+                    visLabel(a.amount.toString()) { it.expandX().width(50f) }
 
-                    visTextButton("Bribe!") {
-                        also {
-                            val height = (0 until this.rows).fold(0f) { acc, i ->
-                                acc + getRowMinHeight(i)
-                            }
-                            val pad = (40f - height) / 2
-
-                            pad(pad, 20f, pad, 20f)
-
-                            bribeButton = it
-                        }
+                    visTextButton("1") {
+                        onClick { onSellClicked(1 * a.resourceType) }
+                        it.expandX().fillX().width(50f)
                     }
+                    visTextButton("10") {
+                        onClick { onSellClicked(10 * a.resourceType) }
+                        it.expandX().fillX().width(50f)
+                    }
+                    visTextButton("100") {
+                        onClick { onSellClicked(100 * a.resourceType) }
+                        it.expandX().fillX().width(50f)
+                    }
+                    row()
                 }
 
-                this.add().expand().fill()
+//                visTable { setFillParent(true) }
             }
         }
+        .also { inventory = it }
     }
 }
 
-/// Awareness widget
 
-class Awareness(min: Float, max: Float, stepSize: Float, vertical: Boolean) :
-    VisProgressBar(min, max, stepSize, vertical) {
-
-    fun update(value: Float) {
-        this.value = value
-    }
-
-    override fun getPrefWidth(): Float {
-        return 400f
-    }
-}
-
-@Scene2dDsl
-@OptIn(ExperimentalContracts::class)
-inline fun <S> KWidget<S>.awareness(
-    min: Float = 0f,
-    max: Float = 1f,
-    step: Float = 0.001f,
-    vertical: Boolean = false,
-    init: (@Scene2dDsl VisProgressBar).(S) -> Unit = {}
-): Awareness {
-    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-    return actor(Awareness(min, max, step, vertical), init)
-}
-
-/// Money widget
-
-class Money(value: Int) : VisLabel("₽ $value") {
-    fun update(value: Int) {
-        txt = "₽ $value"
-    }
-}
-
-@Scene2dDsl
-@OptIn(ExperimentalContracts::class)
-inline fun <S> KWidget<S>.money(
-    value: Int,
-    init: (@Scene2dDsl VisLabel).(S) -> Unit = {}
-): Money {
-    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-    return actor(Money(value), init)
-}

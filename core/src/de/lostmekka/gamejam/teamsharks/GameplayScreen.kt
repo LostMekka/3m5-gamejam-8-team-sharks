@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import com.kotcrab.vis.ui.VisUI
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
@@ -73,7 +75,7 @@ class GameplayScreen : KtxScreen {
     private val gameplayCamera = OrthographicCamera()
     private val gameplayViewport = ScreenViewport(gameplayCamera)
     private val stage: Stage = createStage()
-    private val ui = GameplayUi(stage)
+    private val ui = GameplayUi()
 
     private val state = GameState()
 
@@ -99,7 +101,6 @@ class GameplayScreen : KtxScreen {
         }
 
         state.update(delta)
-        ui.update(state)
         stage.act(delta)
 
         shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameplayCamera) {
@@ -166,6 +167,7 @@ class GameplayScreen : KtxScreen {
             bribeCost = 10,
             onBribeClicked = { state.enemyAwareness *= 0.5f }
         )
+        stage.draw()
     }
 
     data class BuyOption(
@@ -206,7 +208,14 @@ class GameplayScreen : KtxScreen {
         content: List<ResourceAmount>,
         onSellClicked: (ResourceAmount) -> Unit,
     ) {
-        // TODO: implement
+        ui.renderInventory(
+            stage,
+            stage.viewport.unproject(gameplayViewport.project(Vector2(rect.x, rect.y))).let {
+                Rectangle(it.x, it.y, rect.width, rect.height)
+            },
+            content,
+            onSellClicked
+        )
     }
 
     fun renderStaticGui(
@@ -216,12 +225,12 @@ class GameplayScreen : KtxScreen {
         bribeCost: Int,
         onBribeClicked: () -> Unit,
     ) {
-        ui.update(state)
-        stage.draw()
+        ui.renderStaticUi(stage, state)
     }
 
     private fun createStage(): Stage {
         val stage = stage(viewport = ScreenViewport(), batch = spriteBatch)
+        stage.setDebugUnderMouse(true)
         Gdx.input.inputProcessor = stage
         Scene2DSkin.defaultSkin = loadSkin()
 
@@ -230,6 +239,7 @@ class GameplayScreen : KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         gameplayViewport.update(width, height)
+        stage.viewport.update(width, height)
     }
 
     override fun dispose() {
