@@ -9,8 +9,8 @@ class Machine(
     var name: String,
     var consumableResource: ResourceType,
     var producibleResource: ResourceType,
-    var amountToConsume: Int,
-    var amountToProduce: Int,
+    var amountConsumed: Int,
+    var amountProduced: Int,
     var progressDuration: Float,
 ) {
     private val progress = Progress(progressDuration)
@@ -24,10 +24,12 @@ class Machine(
         name = newMachine.name
         consumableResource = newMachine.consumableResource
         producibleResource = newMachine.producibleResource
-        amountToConsume = newMachine.amountToConsume
-        amountToProduce = newMachine.amountToProduce
+        amountConsumed = newMachine.amountConsumed
+        amountProduced = newMachine.amountProduced
         progressDuration = newMachine.progressDuration
         progress.updateTime = progressDuration
         progress.reset()
     }
+
+    fun isReady() = progress.isMax()
 }
