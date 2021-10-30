@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
 import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import de.lostmekka.gamejam.teamsharks.helper.ifKeyPressed
@@ -16,15 +19,9 @@ import de.lostmekka.gamejam.teamsharks.helper.rect
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 import de.lostmekka.gamejam.teamsharks.util.GridSection
-import de.lostmekka.gamejam.teamsharks.util.by
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 import ktx.graphics.use
-
-private val gridSize = 10 by 10
-private val borderSize = 2 by 2
-private val grid = GridSection(0, 0, gridSize)
-private val inventorySpace = GridSection(0, 5, 3 by 5)
 
 private val cellWidth get() = Gdx.graphics.width / (gridSize.x + 2f * borderSize.x)
 private val cellHeight get() = Gdx.graphics.height / (gridSize.y + 2f * borderSize.y)
