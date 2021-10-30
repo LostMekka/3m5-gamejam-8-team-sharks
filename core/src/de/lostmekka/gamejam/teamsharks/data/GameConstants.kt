@@ -8,4 +8,11 @@ object GameConstants {
     val borderSize = 2 by 2
     val grid = GridSection(0, 0, gridSize)
     val inventorySpace = GridSection(0, 5, 3 by 5)
+
+    val resourcePrices = mutableMapOf(
+        ResourceType.IronOre to 1,
+        ResourceType.CopperOre to 2,
+        ResourceType.IronIngot to 3,
+        ResourceType.CopperIngot to 4,
+    )
 }

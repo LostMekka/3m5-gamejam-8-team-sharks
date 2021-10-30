@@ -13,10 +13,12 @@ import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
 import de.lostmekka.gamejam.teamsharks.data.GameState
-import de.lostmekka.gamejam.teamsharks.data.Machine
+import de.lostmekka.gamejam.teamsharks.data.MachineBlueprint
+import de.lostmekka.gamejam.teamsharks.data.MachineType
 import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
 import de.lostmekka.gamejam.teamsharks.data.times
 import de.lostmekka.gamejam.teamsharks.data.ResourceType
+import de.lostmekka.gamejam.teamsharks.data.machineBlueprints
 import de.lostmekka.gamejam.teamsharks.helper.ifKeyPressed
 import de.lostmekka.gamejam.teamsharks.helper.rect
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
@@ -71,7 +73,23 @@ class GameplayScreen : KtxScreen {
     override fun render(delta: Float) {
         ifKeyPressed(Input.Keys.ESCAPE) { Gdx.app.exit() }
 
-        ifKeyPressed(Input.Keys.A) { state.sellResource(1 * ResourceType.IronOre) }
+        // TODO: remove these debug cheat keys
+        ifKeyPressed(Input.Keys.NUM_1) { state.factory += 100 * ResourceType.IronOre }
+        ifKeyPressed(Input.Keys.NUM_2) { state.sellResource(1 * ResourceType.IronOre) }
+        ifKeyPressed(Input.Keys.Q) {
+            state.buyMachine(
+                GridPosition(0, 0),
+                machineBlueprints.getValue(MachineType.Smelter).first()
+            )
+        }
+        ifKeyPressed(Input.Keys.W) {
+            val pos = GridPosition(0, 0)
+            val tier = state.factory[pos]!!.tier
+            machineBlueprints
+                .getValue(MachineType.Smelter)
+                .getOrNull(tier)
+                ?.also { state.upgradeMachine(pos, it) }
+        }
 
         state.update(delta)
 
@@ -92,36 +110,84 @@ class GameplayScreen : KtxScreen {
             }
         }
 
+        val buyOptions = machineBlueprints.map { (type, blueprints) ->
+            val blueprint = blueprints.first()
+            BuyOption(
+                name = blueprint.name,
+                machineType = type,
+                cost = blueprint.cost,
+                canAfford = state.money >= blueprint.cost,
+                blueprint = blueprint,
+            )
+        }
         for (x in 0 until gridSize.x) {
             for (y in 0 until gridSize.y) {
                 val cell = cell(x, y)
                 if (cell.pos in inventorySpace) continue
                 val machine = state.factory[cell.pos]
                 if (machine == null) {
-                    renderEmptyCell(cell.rect) { state.buyMachine(cell.pos, createMachine()) }
+                    renderEmptyCell(
+                        rect = cell.rect,
+                        buyOptions = buyOptions,
+                        onBuyClicked = { state.buyMachine(cell.pos, it.blueprint) }
+                    )
                 } else {
-                    renderMachineCell(cell.rect, machine) { machine.upgrade() }
+                    val nextTier = machineBlueprints[machine.machineType]?.getOrNull(machine.tier)
+                    renderMachineCell(
+                        rect = cell.rect,
+                        machine = MachineStatus(
+                            name = machine.name,
+                            tier = machine.tier,
+                            workProgress = machine.progress,
+                            upgradeAvailable = nextTier != null,
+                            upgradeAffordable = nextTier != null && state.money >= nextTier.cost,
+                            upgradeCost = nextTier?.cost ?: 0,
+                        ),
+                        onUpgradeClicked = { nextTier?.let { state.upgradeMachine(cell.pos, it) } }
+                    )
                 }
             }
         }
         val inventoryContent = ResourceType.values().map { state.factory[it] * it }
         renderInventory(inventorySpace.rect, inventoryContent) { state.sellResource(it) }
         // TODO: better logic for bribe cost and effect
-        renderStaticGui(state.money, state.enemyAwareness, 10) { state.enemyAwareness *= 0.5f }
+        renderStaticGui(
+            currentDepth = state.factory.depth,
+            money = state.money,
+            awareness = state.enemyAwareness,
+            bribeCost = 10,
+            onBribeClicked = { state.enemyAwareness *= 0.5f }
+        )
     }
 
-    fun createMachine(): Machine = TODO()
+    data class BuyOption(
+        val name: String,
+        val machineType: MachineType,
+        val cost: Int,
+        val canAfford: Boolean,
+        val blueprint: MachineBlueprint,
+    )
 
     fun renderEmptyCell(
         rect: Rectangle,
-        onBuyClicked: () -> Unit,
+        buyOptions: List<BuyOption>,
+        onBuyClicked: (BuyOption) -> Unit,
     ) {
         // TODO: implement
     }
 
+    data class MachineStatus(
+        val name: String,
+        val tier: Int,
+        val workProgress: Float,
+        val upgradeAvailable: Boolean,
+        val upgradeAffordable: Boolean,
+        val upgradeCost: Int,
+    )
+
     fun renderMachineCell(
         rect: Rectangle,
-        machine: Machine,
+        machine: MachineStatus,
         onUpgradeClicked: () -> Unit,
     ) {
         // TODO: implement
@@ -136,6 +202,7 @@ class GameplayScreen : KtxScreen {
     }
 
     fun renderStaticGui(
+        currentDepth: Float,
         money: Int,
         awareness: Float,
         bribeCost: Int,

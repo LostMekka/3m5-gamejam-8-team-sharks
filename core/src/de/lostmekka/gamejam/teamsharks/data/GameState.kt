@@ -1,17 +1,12 @@
 package de.lostmekka.gamejam.teamsharks.data
 
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.resourcePrices
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 
 class GameState {
     var money = 0
     var enemyAwareness = 0f
     val factory = Factory()
-    val resourcePrices = mutableMapOf(
-        ResourceType.IronOre to 1,
-        ResourceType.CopperOre to 2,
-        ResourceType.IronIngot to 3,
-        ResourceType.CopperIngot to 4,
-    )
     val currentResourceDeposits = mutableListOf<ResourceDeposit>()
 
     fun sellResource(resourceAmount: ResourceAmount) {
@@ -22,19 +17,19 @@ class GameState {
         }
     }
 
-    fun upgradeMachine(gridPosition: GridPosition) {
-        val cost = 10 // TODO
+    fun upgradeMachine(gridPosition: GridPosition, blueprint: MachineBlueprint) {
+        val cost = blueprint.cost
         if (money < cost) return
-        val machine = factory[gridPosition] ?: return
-        machine.upgrade()
+        factory[gridPosition] ?: return
+        factory[gridPosition] = blueprint.createFunction(gridPosition)
         money -= cost
     }
 
-    fun buyMachine(gridPosition: GridPosition, machine: Machine) {
-        val cost = 10 // TODO
+    fun buyMachine(gridPosition: GridPosition, blueprint: MachineBlueprint) {
+        val cost = blueprint.cost
         if (money < cost) return
         if (factory[gridPosition] != null) return
-        factory[gridPosition] = machine
+        factory[gridPosition] = blueprint.createFunction(gridPosition)
         money -= cost
     }
 
