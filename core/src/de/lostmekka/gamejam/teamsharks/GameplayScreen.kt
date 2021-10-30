@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
@@ -22,11 +23,15 @@ import de.lostmekka.gamejam.teamsharks.data.machineBlueprints
 import de.lostmekka.gamejam.teamsharks.helper.ifKeyPressed
 import de.lostmekka.gamejam.teamsharks.helper.rect
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
+import de.lostmekka.gamejam.teamsharks.ui.GameplayUi
+import de.lostmekka.gamejam.teamsharks.ui.loadSkin
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 import de.lostmekka.gamejam.teamsharks.util.GridSection
 import ktx.app.KtxScreen
 import ktx.assets.disposeSafely
 import ktx.graphics.use
+import ktx.scene2d.Scene2DSkin
+import ktx.actors.*
 
 private val cellWidth get() = Gdx.graphics.width / (gridSize.x + 2f * borderSize.x)
 private val cellHeight get() = Gdx.graphics.height / (gridSize.y + 2f * borderSize.y)
@@ -67,6 +72,8 @@ class GameplayScreen : KtxScreen {
     private val sprites = Sprites()
     private val gameplayCamera = OrthographicCamera()
     private val gameplayViewport = ScreenViewport(gameplayCamera)
+    private val stage: Stage = createStage()
+    private val ui = GameplayUi(stage)
 
     private val state = GameState()
 
@@ -92,6 +99,8 @@ class GameplayScreen : KtxScreen {
         }
 
         state.update(delta)
+        ui.update(state)
+        stage.act(delta)
 
         shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameplayCamera) {
             for (x in 0 until gridSize.x) {
@@ -104,7 +113,6 @@ class GameplayScreen : KtxScreen {
         }
 
         spriteBatch.use(gameplayCamera) {
-            font.draw(it, "Hello Kotlin!", 100f, 100f)
             for ((i, resourceType) in ResourceType.values().withIndex()) {
                 it.draw(sprites.resourceIcons[resourceType], 10f, 50f + 40f * i)
             }
@@ -208,7 +216,16 @@ class GameplayScreen : KtxScreen {
         bribeCost: Int,
         onBribeClicked: () -> Unit,
     ) {
-        // TODO: implement
+        ui.update(state)
+        stage.draw()
+    }
+
+    private fun createStage(): Stage {
+        val stage = stage(viewport = ScreenViewport(), batch = spriteBatch)
+        Gdx.input.inputProcessor = stage
+        Scene2DSkin.defaultSkin = loadSkin()
+
+        return stage
     }
 
     override fun resize(width: Int, height: Int) {
@@ -219,5 +236,6 @@ class GameplayScreen : KtxScreen {
         font.disposeSafely()
         spriteBatch.disposeSafely()
         sprites.disposeSafely()
+        stage.disposeSafely()
     }
 }
