@@ -14,6 +14,9 @@ object GameConstants {
 
     val machineScale = 99
 
+    val factoryWidth = 1536
+    val factoryHeight = 864
+
     val factoryBaseMiningSpeed = 1f
     val factoryBaseDrillingSpeed = 5f
 

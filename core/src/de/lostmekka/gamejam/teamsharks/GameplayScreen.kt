@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.factoryHeight
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.factoryWidth
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.grid
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
@@ -169,11 +171,11 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
             // Draw Factory
             it.color = Color.WHITE
             it.draw(
-                sprites.backgroundFactory,
+                sprites.factoryAnimation.getKeyFrame(delta),
                 grid.rect.getX() - 100f,
                 grid.rect.getY() - 60f,
-                sprites.backgroundFactory.width.toFloat(),
-                sprites.backgroundFactory.height.toFloat(),
+                factoryWidth.toFloat(),
+                factoryHeight.toFloat(),
             )
             // Draw machines
             for (x in 0 until gridSize.x) {
