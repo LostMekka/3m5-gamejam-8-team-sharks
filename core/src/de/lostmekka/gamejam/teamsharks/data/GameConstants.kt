@@ -16,8 +16,10 @@ object GameConstants {
 
     val resourcePrices = mutableMapOf(
         ResourceType.IronOre to 1,
-        ResourceType.CopperOre to 2,
-        ResourceType.IronIngot to 3,
-        ResourceType.CopperIngot to 4,
+        ResourceType.IronIngot to 5,
+        ResourceType.CopperOre to 1,
+        ResourceType.CopperIngot to 5,
+        ResourceType.Coal to 1,
+        ResourceType.SteelBeam to 50,
     )
 }
