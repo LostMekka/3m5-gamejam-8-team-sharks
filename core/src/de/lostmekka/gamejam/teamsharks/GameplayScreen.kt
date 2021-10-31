@@ -16,6 +16,7 @@ import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.grid
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.machineScale
 import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.MachineBlueprint
 import de.lostmekka.gamejam.teamsharks.data.MachineType
@@ -147,12 +148,20 @@ class GameplayScreen : KtxScreen {
                 sprites.backgroundFactory.width.toFloat(),
                 sprites.backgroundFactory.height.toFloat(),
             )
+            // Draw machines
+            for (x in 0 until gridSize.x) {
+                for (y in 0 until gridSize.y) {
+                    val cell = cell(x, y)
+                    val machine = state.factory[cell.pos] ?: continue
+                    it.draw(
+                        sprites.machinesSprites[machine.machineType],
+                        cell.rect.getX(),
+                        cell.rect.getY(),
+                    )
+                }
+            }
         }
 
-        shapeRenderer.use(ShapeRenderer.ShapeType.Filled) {
-            it.color = Color.BLACK
-            it.rect(grid.rect)
-        }
         shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameplayCamera) {
             it.color = Color.WHITE
             for (x in 0 until gridSize.x) {

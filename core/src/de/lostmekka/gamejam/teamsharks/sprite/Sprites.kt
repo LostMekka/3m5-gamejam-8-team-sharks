@@ -2,6 +2,7 @@ package de.lostmekka.gamejam.teamsharks.sprite
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import de.lostmekka.gamejam.teamsharks.data.MachineType
 import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import ktx.assets.disposeSafely
 
@@ -17,6 +18,16 @@ class Sprites {
             mapOf(
                 ResourceType.IronOre to it[3],
                 ResourceType.CopperOre to it[1],
+            )
+        }
+    val machinesSprites = loadTexture("sprites/background/Machines.png")
+        .split(99, 99, 5, 5)
+        .let {
+            mapOf(
+                MachineType.OreCrusher to it[0],
+                MachineType.Engine to it[1],
+                MachineType.Drill to it[2],
+                MachineType.Smelter to it[3],
             )
         }
 

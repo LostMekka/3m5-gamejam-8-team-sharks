@@ -12,6 +12,8 @@ object GameConstants {
     val dirtLayerScale = 64
     val dirtLayerColorVariance = 0.2f
 
+    val machineScale = 99f
+
     val resourcePrices = mutableMapOf(
         ResourceType.IronOre to 1,
         ResourceType.CopperOre to 2,
