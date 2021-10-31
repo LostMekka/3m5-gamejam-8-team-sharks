@@ -8,8 +8,20 @@ enum class ResourceType {
     CopperWire,
     Coal,
     Oil,
-    SteelBeam,
+    SteelBeam,;
     //...
+
+    override fun toString(): String =
+        when (this) {
+            IronOre -> "Iron Ore"
+            CopperOre -> "Copper Ore"
+            IronIngot -> "Iron Ingot"
+            CopperIngot -> "Copper Ingot"
+            CopperWire -> "Copper Wire"
+            Coal -> "Coal"
+            Oil -> "Oil"
+            SteelBeam -> "Steel Beam"
+        }
 }
 
 data class ResourceAmount(

@@ -18,7 +18,7 @@ import ktx.collections.toGdxArray
 class Sprites {
     private val allSprites = mutableListOf<Texture>()
 
-    val resourceIcons = ResourceType.values().associateWith { loadTexture("sprites/resources/$it.png") }
+    val resourceIcons = ResourceType.values().associateWith { loadTexture("sprites/resources/${it.name}.png") }
     val icons = loadTexture("sprites/Icons.png")
         .split(27, 27, 50, 1)
     val backgroundEarth = loadTexture("sprites/background/BgEarth.png")

@@ -58,7 +58,7 @@ class GameplayUi {
 
                 for (c in content) {
                     visImage(sprites.resourceIcons.getValue(c.resourceType))
-                    visLabel(c.resourceType.name) { it.expandX().fillX() }
+                    visLabel(c.resourceType.toString()) { it.expandX().fillX() }
                     visLabel(c.amount.toString()) { it.expandX().width(50f) }
 
                     visTextButton("1") {
@@ -285,7 +285,7 @@ class GameplayUi {
             sprites.resourceIcons[resourceType]?.let { visImage(it) } ?: visLabel("")
             row()
 
-            visLabel(resourceType.name) {
+            visLabel(resourceType.toString()) {
                 it.fillX().expandX()
                 setAlignment(Align.center)
             }
