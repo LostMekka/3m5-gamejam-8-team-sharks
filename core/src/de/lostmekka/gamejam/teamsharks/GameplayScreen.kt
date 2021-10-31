@@ -132,7 +132,7 @@ class GameplayScreen : KtxScreen {
                     )
                 }
             }
-            // draw resource deposits
+            // Draw resource deposits
             it.color = Color.WHITE
             for (deposit in state.currentResourceDeposits) {
                 val rect = deposit.rect(state.factory.depth)
@@ -157,6 +157,8 @@ class GameplayScreen : KtxScreen {
                         sprites.machinesSprites[machine.machineType],
                         cell.rect.getX(),
                         cell.rect.getY(),
+                        cell.rect.height,
+                        cell.rect.height,
                     )
                 }
             }

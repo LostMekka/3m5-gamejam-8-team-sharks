@@ -26,8 +26,7 @@ fun createStaticUi(stage: Stage, state: GameState, onBribeClicked: () -> Unit, s
             it.padTop(64f)
 
             horizontalGroup {
-                // TODO Correct sprite
-                image(sprites.resourceIcons[ResourceType.IronOre]!!)
+                image(sprites.icons[4])
                 money(state.money)
 
                 padRight(200f)

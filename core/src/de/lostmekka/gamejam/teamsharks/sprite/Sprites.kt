@@ -9,7 +9,8 @@ import ktx.assets.disposeSafely
 class Sprites {
     private val allSprites = mutableListOf<Texture>()
 
-    val resourceIcons = ResourceType.values().associateWith { loadTexture("sprites/resources/$it.png") }
+    val icons = loadTexture("sprites/Icons.png")
+        .split(27, 27, 50, 1)
     val backgroundEarth = loadTexture("sprites/background/BgEarth.png")
     val backgroundFactory = loadTexture("sprites/background/Factory.png")
     val resourceDeposits = loadTexture("sprites/resources/Ores.png")

@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Align
 import de.lostmekka.gamejam.teamsharks.GameplayScreen
 import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
+import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import ktx.actors.onClick
 import ktx.scene2d.vis.*
 import de.lostmekka.gamejam.teamsharks.data.times
@@ -40,9 +41,12 @@ class GameplayUi {
                 row()
 
                 for (c in content) {
-                    sprites.resourceIcons[c.resourceType]
-                        ?.let { visImage(it) }
-                        ?: visLabel("")
+                    when (c.resourceType) {
+                        ResourceType.IronOre -> visImage(sprites.icons[2])
+                        ResourceType.CopperOre -> visImage(sprites.icons[3])
+                        ResourceType.IronIngot -> visImage(sprites.icons[8])
+                        ResourceType.CopperIngot -> visImage(sprites.icons[9])
+                    }
 
                     visLabel(c.resourceType.name) { it.expandX().fillX() }
                     visLabel(c.amount.toString()) { it.expandX().width(50f) }
