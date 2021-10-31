@@ -44,6 +44,7 @@ class Sprites {
                 MachineType.Smelter to it[3],
                 MachineType.Furnace to it[3], // TODO: create separate sprite
                 MachineType.WireMaker to it[5],
+                MachineType.ChemLab to it[5], // TODO: create separate sprite
             )
         }
     val machineErrorSprite = loadTexture("sprites/background/Machines.png")

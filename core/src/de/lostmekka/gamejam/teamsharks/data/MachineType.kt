@@ -6,5 +6,6 @@ enum class MachineType {
     Smelter,
     Furnace,
     WireMaker,
+    ChemLab,
     DrillModule,
 }

@@ -82,6 +82,28 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
             }
         )
     },
+    MachineType.ChemLab to (1..10).map { tier ->
+        MachineBlueprint(
+            name = "Chem Lab",
+            cost = 150 + (tier - 1) * 100,
+            createFunction = { pos ->
+                Machine(
+                    machineType = MachineType.ChemLab,
+                    position = pos,
+                    name = "Chem Lab",
+                    recipes = listOf(
+                        Recipe(
+                            consumedResources = listOf(2 * Coal),
+                            producedResources = listOf(1 * Oil),
+                            baseDuration = 15f,
+                        ),
+                    ),
+                    tier = tier,
+                    speedModifier = tier.toFloat(),
+                )
+            }
+        )
+    },
     MachineType.DrillModule to (1..100).map { tier ->
         MachineBlueprint(
             name = "Drill Module",
