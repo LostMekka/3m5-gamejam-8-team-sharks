@@ -22,13 +22,13 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
                     name = "Smelter",
                     recipes = listOf(
                         Recipe(
-                            consumedResources = listOf(2 * ResourceType.IronOre),
+                            consumedResources = listOf(2 * IronOre),
                             producedResources = listOf(1 * IronIngot),
                             baseDuration = 10f,
                         ),
                         Recipe(
-                            consumedResources = listOf(2 * ResourceType.CopperOre),
-                            producedResources = listOf(1 * ResourceType.CopperIngot),
+                            consumedResources = listOf(2 * CopperOre),
+                            producedResources = listOf(1 * CopperIngot),
                             baseDuration = 10f,
                         ),
                     ),
@@ -56,6 +56,37 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
                     ),
                     tier = tier,
                     speedModifier = tier.toFloat(),
+                )
+            }
+        )
+    },
+    MachineType.DrillModule to (1..100).map { tier ->
+        MachineBlueprint(
+            name = "Drill Module",
+            cost = 100 * 2f.pow(tier - 1).toInt(),
+            createFunction = { pos ->
+                Machine(
+                    machineType = MachineType.DrillModule,
+                    position = pos,
+                    name = "Drill Module",
+                    recipes = listOf(),
+                    tier = tier,
+                    drillSpeedPercentageBonus = tier * 2f,
+                )
+            }
+        )
+    },
+    MachineType.MiningModule to (1..100).map { tier ->
+        MachineBlueprint(
+            name = "Mining Module",
+            cost = 100 * 2f.pow(tier - 1).toInt(),
+            createFunction = { pos ->
+                Machine(
+                    machineType = MachineType.MiningModule,
+                    position = pos,
+                    name = "Mining Module",
+                    tier = tier,
+                    miningSpeedPercentageBonus = tier * 2f,
                 )
             }
         )

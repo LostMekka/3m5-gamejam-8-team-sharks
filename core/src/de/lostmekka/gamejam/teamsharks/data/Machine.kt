@@ -6,10 +6,12 @@ import de.lostmekka.gamejam.teamsharks.util.Timer
 class Machine(
     val machineType: MachineType,
     val position: GridPosition,
-    var name: String,
-    val recipes: List<Recipe>,
-    var tier: Int,
-    var speedModifier: Float,
+    val name: String,
+    val tier: Int,
+    val recipes: List<Recipe> = listOf(),
+    val speedModifier: Float = 1f,
+    val drillSpeedPercentageBonus: Float = 0f,
+    val miningSpeedPercentageBonus: Float = 0f,
 ) {
     private val namePrefix = listOf(
         "Better",

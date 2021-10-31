@@ -14,6 +14,9 @@ object GameConstants {
 
     val machineScale = 99f
 
+    val factoryBaseMiningSpeed = 1f
+    val factoryBaseDrillingSpeed = 5f
+
     val resourcePrices = mutableMapOf(
         ResourceType.IronOre to 1,
         ResourceType.IronIngot to 5,

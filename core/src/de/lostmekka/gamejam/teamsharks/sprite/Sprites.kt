@@ -28,8 +28,8 @@ class Sprites {
         .let {
             mapOf(
                 MachineType.OreCrusher to it[0],
-                MachineType.Engine to it[1],
-                MachineType.Drill to it[2],
+                MachineType.DrillModule to it[1],
+                MachineType.MiningModule to it[2],
                 MachineType.Smelter to it[3],
                 MachineType.Furnace to it[3], // TODO: create separate sprite
             )
