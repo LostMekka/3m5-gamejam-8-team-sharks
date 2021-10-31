@@ -173,12 +173,6 @@ class GameplayScreen : KtxScreen {
             it.rect(inventorySpace.rect)
         }
 
-        spriteBatch.use(gameplayCamera) {
-            for ((i, resourceType) in ResourceType.values().withIndex()) {
-                it.draw(sprites.resourceIcons[resourceType], 10f, 50f + 40f * i)
-            }
-        }
-
         val buyOptions = machineBlueprints.map { (type, blueprints) ->
             val blueprint = blueprints.first()
             BuyOption(
