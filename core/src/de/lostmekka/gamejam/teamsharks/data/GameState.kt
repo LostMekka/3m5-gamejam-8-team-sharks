@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerColorVariance
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.resourcePrices
+import de.lostmekka.gamejam.teamsharks.rect
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 import kotlin.random.Random
 
@@ -12,12 +13,21 @@ class GameState {
     var enemyAwareness = 0f
     val factory = Factory()
     val currentResourceDeposits = mutableListOf<ResourceDeposit>()
+    var nextResourceDepositDepth = 0f
     var dirtLayerOffset = 0f
 
     fun update(deltaTime: Float) {
-        // TODO: create new resource deposits as factory descents
         factory.update(deltaTime, currentResourceDeposits)
-        dirtLayerOffset = (dirtLayerOffset + deltaTime * factory.drillingSpeed) % (dirtLayerScale)
+        val deltaDepth = deltaTime * factory.drillingSpeed
+
+        val minDepositDepth = factory.depth - GameConstants.grid.rect.height - 500
+        currentResourceDeposits.removeAll { it.depth < minDepositDepth }
+        if (factory.depth > nextResourceDepositDepth) {
+            currentResourceDeposits += resourceDepositBlueprints.values.random().createFunction(factory.depth + 400)
+            nextResourceDepositDepth = factory.depth + Random.nextFloat() * 400f + 200f
+        }
+
+        dirtLayerOffset = (dirtLayerOffset + deltaDepth) % (dirtLayerScale)
     }
 
     private fun randomTintColor(): Color {

@@ -1,5 +1,6 @@
 package de.lostmekka.gamejam.teamsharks.data
 
+import de.lostmekka.gamejam.teamsharks.rect
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 
 class Factory {
@@ -12,10 +13,8 @@ class Factory {
     fun update(deltaTime: Float, deposits: List<ResourceDeposit>) {
         depth += drillingSpeed * deltaTime
         machines.values.forEach { it.update(deltaTime, this) }
-        val coveringHeightRange = (depth - GameConstants.gridSize.y)..depth
-        deposits
-            .filter { it touches coveringHeightRange }
-            .forEach { this += it.update(deltaTime, miningSpeed) }
+        val coveringHeightRange = (depth - GameConstants.grid.rect.height)..depth
+        deposits.forEach { this += it.update(deltaTime, miningSpeed, coveringHeightRange) }
     }
 
     operator fun get(pos: GridPosition) = machines[pos]

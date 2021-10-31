@@ -20,9 +20,11 @@ import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.MachineBlueprint
 import de.lostmekka.gamejam.teamsharks.data.MachineType
 import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
+import de.lostmekka.gamejam.teamsharks.data.ResourceDeposit
 import de.lostmekka.gamejam.teamsharks.data.times
 import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import de.lostmekka.gamejam.teamsharks.data.machineBlueprints
+import de.lostmekka.gamejam.teamsharks.helper.draw
 import de.lostmekka.gamejam.teamsharks.helper.ifKeyPressed
 import de.lostmekka.gamejam.teamsharks.helper.rect
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
@@ -55,13 +57,21 @@ private fun cell(x: Int, y: Int) =
         pos = GridPosition(x, y),
     )
 
-private val GridSection.rect: Rectangle
+val GridSection.rect: Rectangle
     get() = Rectangle(
         x * cellWidth - cellWidth * gridSize.x / 2f,
         y * cellHeight - cellHeight * gridSize.y / 2f,
         w * cellWidth,
         h * cellHeight,
     )
+
+private fun ResourceDeposit.rect(factoryDepth: Float): Rectangle {
+    val x = grid.rect.x - borderSize.x * cellWidth / 2f
+    val side = if (isLeft) 1 else -1
+    val size = height
+    val y = factoryDepth - depth + size / 2f - grid.h * cellHeight / 2f
+    return Rectangle(x * side - size / 2f, y - size / 2f, size, size)
+}
 
 class GameplayScreen : KtxScreen {
     private val font = BitmapFont()
@@ -121,7 +131,15 @@ class GameplayScreen : KtxScreen {
                     )
                 }
             }
+            // draw resource deposits
+            it.color = Color.WHITE
+            for (deposit in state.currentResourceDeposits) {
+                val rect = deposit.rect(state.factory.depth)
+                it.color = if (deposit.isMined) Color.WHITE else Color.RED
+                it.draw(sprites.resourceDeposits.getValue(deposit.resourceType), rect)
+            }
             // Draw Factory
+            it.color = Color.WHITE
             it.draw(
                 sprites.backgroundFactory,
                 grid.rect.getX() - 100f,
@@ -192,6 +210,9 @@ class GameplayScreen : KtxScreen {
         }
         val inventoryContent = ResourceType.values().map { state.factory[it] * it }
         renderInventory(inventorySpace.rect, inventoryContent) { state.sellResource(it) }
+        for (depot in state.currentResourceDeposits) {
+            renderResourceDepositGui(depot.rect(state.factory.depth), depot.resourceType, depot.resourceAmount)
+        }
         // TODO: better logic for bribe cost and effect
         renderStaticGui(
             currentDepth = state.factory.depth,
@@ -260,6 +281,14 @@ class GameplayScreen : KtxScreen {
         onBribeClicked: () -> Unit,
     ) {
         ui.renderStaticUi(stage, state, onBribeClicked, sprites)
+    }
+
+    fun renderResourceDepositGui(
+        rect: Rectangle,
+        resourceType: ResourceType,
+        resourceAmount: Int,
+    ) {
+        // TODO: implement
     }
 
     private fun createStage(): Stage {
