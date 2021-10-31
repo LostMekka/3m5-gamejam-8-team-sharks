@@ -12,8 +12,8 @@ class Factory {
     var miningSpeed = GameConstants.factoryBaseMiningSpeed
 
     fun update(deltaTime: Float, deposits: List<ResourceDeposit>, soundEventHandler: SoundEventHandler) {
-        drillingSpeed = GameConstants.factoryBaseDrillingSpeed * bonusPercentage { drillSpeedPercentageBonus }
-        miningSpeed = GameConstants.factoryBaseMiningSpeed * bonusPercentage { miningSpeedPercentageBonus }
+        drillingSpeed = GameConstants.factoryBaseDrillingSpeed + sumOverMachines { drillSpeedBonus }
+        miningSpeed = GameConstants.factoryBaseMiningSpeed + sumOverMachines { miningSpeedBonus }
 
         depth += drillingSpeed * deltaTime
         machines.values.forEach { it.update(deltaTime, this, soundEventHandler) }
@@ -21,9 +21,8 @@ class Factory {
         deposits.forEach { this += it.update(deltaTime, miningSpeed, coveringHeightRange) }
     }
 
-    private fun bonusPercentage(block: Machine.() -> Float): Float {
-        return 1f + machines.values.sumOf { it.block().toDouble() }.toFloat() / 100f
-    }
+    private fun sumOverMachines(block: Machine.() -> Float) =
+        machines.values.sumOf { it.block().toDouble() }.toFloat()
 
     operator fun get(pos: GridPosition) = machines[pos]
     operator fun set(pos: GridPosition, machine: Machine) {

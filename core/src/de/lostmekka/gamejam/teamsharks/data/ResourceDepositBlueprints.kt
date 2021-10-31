@@ -1,6 +1,5 @@
 package de.lostmekka.gamejam.teamsharks.data
 
-import de.lostmekka.gamejam.teamsharks.util.GridPosition
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -14,7 +13,7 @@ val resourceDepositBlueprints: Map<ResourceType, ResourceDepositBlueprint> = map
             depth = depth,
             height = 96f,
             resourceType = ResourceType.IronOre,
-            resourceAmount = (Random.nextFloat() * (depth * 5f + 100f) + 100f).roundToInt(),
+            resourceAmount = (Random.nextFloat() * (depth * 2f + 100f) + 100f).roundToInt(),
         )
     },
     ResourceType.CopperOre to ResourceDepositBlueprint { depth ->
@@ -22,7 +21,7 @@ val resourceDepositBlueprints: Map<ResourceType, ResourceDepositBlueprint> = map
             depth = depth,
             height = 96f,
             resourceType = ResourceType.CopperOre,
-            resourceAmount = (Random.nextFloat() * (depth * 5f + 100f) + 100f).roundToInt(),
+            resourceAmount = (Random.nextFloat() * (depth * 2f + 100f) + 100f).roundToInt(),
         )
     },
     ResourceType.Coal to ResourceDepositBlueprint { depth ->
@@ -30,7 +29,7 @@ val resourceDepositBlueprints: Map<ResourceType, ResourceDepositBlueprint> = map
             depth = depth,
             height = 96f,
             resourceType = ResourceType.Coal,
-            resourceAmount = (Random.nextFloat() * (depth * 5f + 100f) + 100f).roundToInt(),
+            resourceAmount = (Random.nextFloat() * (depth * 2f + 100f) + 100f).roundToInt(),
         )
     },
 )

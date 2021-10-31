@@ -2,7 +2,6 @@ package de.lostmekka.gamejam.teamsharks.data
 
 import de.lostmekka.gamejam.teamsharks.SoundEventHandler
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
-import de.lostmekka.gamejam.teamsharks.util.Timer
 
 class Machine(
     val machineType: MachineType,
@@ -11,8 +10,8 @@ class Machine(
     val tier: Int,
     val recipes: List<Recipe> = listOf(),
     val speedModifier: Float = 1f,
-    val drillSpeedPercentageBonus: Float = 0f,
-    val miningSpeedPercentageBonus: Float = 0f,
+    val drillSpeedBonus: Float = 0f,
+    val miningSpeedBonus: Float = 0f,
 ) {
     private val namePrefix = listOf(
         "Better",

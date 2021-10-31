@@ -2,7 +2,6 @@ package de.lostmekka.gamejam.teamsharks.data
 
 import de.lostmekka.gamejam.teamsharks.data.ResourceType.*
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
-import kotlin.math.pow
 
 class MachineBlueprint(
     val name: String,
@@ -11,10 +10,10 @@ class MachineBlueprint(
 )
 
 val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
-    MachineType.Smelter to (1..5).map { tier ->
+    MachineType.Smelter to (1..100).map { tier ->
         MachineBlueprint(
             name = "Smelter",
-            cost = 10 * 5f.pow(tier - 1).toInt(),
+            cost = 10 * tier,
             createFunction = { pos ->
                 Machine(
                     machineType = MachineType.Smelter,
@@ -38,10 +37,10 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
             }
         )
     },
-    MachineType.Furnace to (1..5).map { tier ->
+    MachineType.Furnace to (1..10).map { tier ->
         MachineBlueprint(
             name = "Furnace",
-            cost = 200 * 5f.pow(tier - 1).toInt(),
+            cost = 200 * tier,
             createFunction = { pos ->
                 Machine(
                     machineType = MachineType.Furnace,
@@ -60,10 +59,10 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
             }
         )
     },
-    MachineType.WireMaker to (1..5).map { tier ->
+    MachineType.WireMaker to (1..10).map { tier ->
         MachineBlueprint(
             name = "Wire Maker",
-            cost = 100 * 5f.pow(tier - 1).toInt(),
+            cost = 100 * tier,
             createFunction = { pos ->
                 Machine(
                     machineType = MachineType.WireMaker,
@@ -107,7 +106,7 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
     MachineType.DrillModule to (1..100).map { tier ->
         MachineBlueprint(
             name = "Drill Module",
-            cost = 100 * 2f.pow(tier - 1).toInt(),
+            cost = tier * 100,
             createFunction = { pos ->
                 Machine(
                     machineType = MachineType.DrillModule,
@@ -115,7 +114,7 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
                     name = "Drill Module",
                     recipes = listOf(),
                     tier = tier,
-                    drillSpeedPercentageBonus = tier * 2f,
+                    drillSpeedBonus = 2f * tier,
                 )
             }
         )
@@ -123,14 +122,14 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
     MachineType.MiningModule to (1..100).map { tier ->
         MachineBlueprint(
             name = "Mining Module",
-            cost = 100 * 2f.pow(tier - 1).toInt(),
+            cost = 100 * tier,
             createFunction = { pos ->
                 Machine(
                     machineType = MachineType.MiningModule,
                     position = pos,
                     name = "Mining Module",
                     tier = tier,
-                    miningSpeedPercentageBonus = tier * 2f,
+                    miningSpeedBonus = 1f * tier,
                 )
             }
         )

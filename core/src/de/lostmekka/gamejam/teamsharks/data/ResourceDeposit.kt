@@ -1,6 +1,5 @@
 package de.lostmekka.gamejam.teamsharks.data
 
-import de.lostmekka.gamejam.teamsharks.util.Timer
 import kotlin.random.Random
 
 class ResourceDeposit(
@@ -13,7 +12,7 @@ class ResourceDeposit(
     val coveringHeightRange = (depth - height)..depth
     var isMined = false
 
-    private val timer = Timer(1f)
+    private var timer = 0f
 
     fun update(
         deltaTime: Float,
@@ -23,11 +22,10 @@ class ResourceDeposit(
         isMined = resourceAmount > 0 && this touches factoryHeightRange
         if (!isMined) return 0 * resourceType
 
-        val amount = minOf(
-            timer.increment(deltaTime * miningSpeed),
-            resourceAmount,
-        )
+        timer += deltaTime * miningSpeed
+        val amount = minOf(timer.toInt(), resourceAmount)
         resourceAmount -= amount
+        timer %= 1f
         return amount * resourceType
     }
 
