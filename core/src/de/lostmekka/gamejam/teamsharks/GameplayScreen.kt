@@ -204,6 +204,8 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
             it.rect(inventorySpace.rect)
         }
 
+        runGuiCleanup()
+
         val buyOptions = machineBlueprints.map { (type, blueprints) ->
             val blueprint = blueprints.first()
             BuyOption(
@@ -336,12 +338,22 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
         ui.renderHelpMenu(stage)
     }
 
+    fun runGuiCleanup() {
+        ui.cleanupResourceDeposits(stage)
+    }
+
     fun renderResourceDepositGui(
         rect: Rectangle,
         resourceType: ResourceType,
         resourceAmount: Int,
     ) {
-        // TODO: implement
+        ui.renderResourceDeposit(
+            stage,
+            sprites,
+            convertToUiCoords(rect, true),
+            resourceType,
+            resourceAmount,
+        )
     }
 
     private fun createStage(): Stage {

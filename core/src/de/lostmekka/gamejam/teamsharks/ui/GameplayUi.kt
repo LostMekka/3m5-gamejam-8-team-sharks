@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisProgressBar
 import de.lostmekka.gamejam.teamsharks.GameplayScreen
 import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
+import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import ktx.actors.onClick
 import ktx.scene2d.vis.*
 import de.lostmekka.gamejam.teamsharks.data.times
@@ -257,6 +258,40 @@ class GameplayUi {
                 }
             }
         }.also { cells[pos] = it }
+    }
+
+    private var resources : MutableList<Actor> = mutableListOf()
+    fun cleanupResourceDeposits(stage: Stage) {
+        for (resource in resources) {
+            stage -= resource
+        }
+    }
+    fun renderResourceDeposit(
+        stage: Stage,
+        sprites: Sprites,
+        rect: Rectangle,
+        resourceType: ResourceType,
+        resourceAmount: Int
+    ) {
+        stage += scene2d.visTable {
+            align(Align.bottomLeft)
+            setSize(rect.width, rect.height)
+            setPosition(rect.x, rect.y)
+
+            sprites.resourceIcons[resourceType]?.let { visImage(it) } ?: visLabel("")
+            row()
+
+            visLabel(resourceType.name) {
+                it.fillX().expandX()
+                setAlignment(Align.center)
+            }
+            row()
+
+            visLabel("$resourceAmount left") {
+                it.fillX().expandX().padBottom(6f)
+                setAlignment(Align.center)
+            }
+        }.also { resources.add(it) }
     }
 }
 
