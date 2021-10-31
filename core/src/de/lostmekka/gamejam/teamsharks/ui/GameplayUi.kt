@@ -4,18 +4,19 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Align
+import com.kotcrab.vis.ui.widget.VisProgressBar
 import de.lostmekka.gamejam.teamsharks.GameplayScreen
-import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
-import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import ktx.actors.onClick
 import ktx.scene2d.vis.*
 import de.lostmekka.gamejam.teamsharks.data.times
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 import ktx.actors.*
-import ktx.scene2d.scene2d
-import ktx.scene2d.scrollPane
+import ktx.scene2d.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 class GameplayUi {
     private var staticUi : Actor? = null
@@ -81,7 +82,7 @@ class GameplayUi {
         .also { inventory = it }
     }
 
-    private var emptyCells : HashMap<GridPosition, Actor> = hashMapOf()
+    private var cells : HashMap<GridPosition, Actor> = hashMapOf()
     private var popup : Actor? = null
     fun renderEmptyCell(
         stage: Stage,
@@ -90,7 +91,7 @@ class GameplayUi {
         buyOptions: List<GameplayScreen.BuyOption>,
         onBuyClicked: (GameplayScreen.BuyOption) -> Unit,
     ) {
-        emptyCells[pos]?.let { stage -= it }
+        cells[pos]?.let { stage -= it }
 
         stage += scene2d.visTable {
             align(Align.bottomLeft)
@@ -129,8 +130,8 @@ class GameplayUi {
                                             popup?.also { stage -= it }
                                             popup = null
 
-                                            emptyCells[pos]?.let { stage -= it }
-                                            emptyCells.remove(pos)
+                                            this@GameplayUi.cells[pos]?.let { stage -= it }
+                                            this@GameplayUi.cells.remove(pos)
                                         }
                                         isDisabled = !option.canAfford
                                         it.width(40f)
@@ -151,7 +152,7 @@ class GameplayUi {
                     }
                 }
             }
-        }.also { emptyCells[pos] = it }
+        }.also { cells[pos] = it }
 
         popup?.let {
             stage -= it
@@ -206,6 +207,74 @@ class GameplayUi {
             stage += it
         }
     }
+
+    fun renderMachineCell(
+        stage: Stage,
+        pos: GridPosition,
+        rect: Rectangle,
+        machine: GameplayScreen.MachineStatus,
+        onUpgradeClicked: () -> Unit
+    ) {
+        cells[pos]?.let { stage -= it }
+
+        stage += scene2d.visTable {
+            align(Align.bottomLeft)
+            setSize(rect.width, rect.height)
+            setPosition(rect.x, rect.y)
+
+            floatingGroup {
+                setFillParent(true)
+
+                machineProgress {
+                    x = 74f
+                    height = rect.height - 1
+                    value = machine.workProgress
+                    isVisible = machine.isWorking
+                }
+
+                visTable {
+                    x = 110f
+                    y = rect.height / 2
+
+                    visLabel("Tier ${machine.tier}") {
+                        it.align(Align.right)
+                    }
+                    row()
+
+                    visLabel("${machine.upgradeCost}") {
+                        it.align(Align.right)
+                        isVisible = machine.upgradeAvailable
+                    }
+                    row()
+
+                    visTextButton("Up!") {
+                        it.align(Align.right)
+                        isDisabled = !machine.upgradeAffordable
+                        isVisible = machine.upgradeAvailable
+
+                        onChange { onUpgradeClicked() }
+                    }
+                }
+            }
+        }.also { cells[pos] = it }
+    }
 }
 
+/// machine progress widget
 
+private class MachineProgress(width: Float) :
+    VisProgressBar(0f, 1f, 0.001f, true) {
+
+//    val explicitWidth = width
+//    override fun getPrefWidth() = explicitWidth
+}
+
+@Scene2dDsl
+@OptIn(ExperimentalContracts::class)
+private inline fun <S> KWidget<S>.machineProgress(
+    width: Float = 4f,
+    init: (@Scene2dDsl VisProgressBar).(S) -> Unit = {}
+): MachineProgress {
+    contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
+    return actor(MachineProgress(width), init)
+}

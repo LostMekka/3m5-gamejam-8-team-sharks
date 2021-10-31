@@ -233,6 +233,7 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
                             name = machine.name,
                             tier = machine.tier,
                             workProgress = machine.progress,
+                            isWorking = machine.isWorking,
                             upgradeAvailable = nextTier != null,
                             upgradeAffordable = nextTier != null && state.money >= nextTier.cost,
                             upgradeCost = nextTier?.cost ?: 0,
@@ -279,9 +280,10 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
         val name: String,
         val tier: Int,
         val workProgress: Float,
+        val isWorking: Boolean,
         val upgradeAvailable: Boolean,
         val upgradeAffordable: Boolean,
-        val upgradeCost: Int,
+        val upgradeCost: Int
     )
 
     fun renderMachineCell(
@@ -290,7 +292,13 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
         machine: MachineStatus,
         onUpgradeClicked: () -> Unit,
     ) {
-        // TODO: implement
+        ui.renderMachineCell(
+            stage,
+            pos,
+            convertToUiCoords(rect, true),
+            machine,
+            onUpgradeClicked,
+        )
     }
 
     fun renderInventory(

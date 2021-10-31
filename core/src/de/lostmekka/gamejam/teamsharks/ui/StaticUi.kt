@@ -5,8 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisProgressBar
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
-import ktx.actors.onClick
-import ktx.actors.txt
+import ktx.actors.onChange
 import ktx.scene2d.*
 import ktx.scene2d.vis.visTable
 import ktx.scene2d.vis.visTextButton
@@ -52,7 +51,7 @@ fun createStaticUi(
                     pad(pad, 20f, pad, 20f)
                 }
 
-                onClick { onBribeClicked() }
+                onChange { onBribeClicked() }
                 isDisabled = money < bribeCost
             }
         }
