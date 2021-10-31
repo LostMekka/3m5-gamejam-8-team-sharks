@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
-import com.kotcrab.vis.ui.VisUI
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.grid
@@ -248,7 +247,8 @@ class GameplayScreen : KtxScreen {
                 Rectangle(it.x, it.y, rect.width, rect.height)
             },
             content,
-            onSellClicked
+            onSellClicked,
+            sprites
         )
     }
 
@@ -259,12 +259,11 @@ class GameplayScreen : KtxScreen {
         bribeCost: Int,
         onBribeClicked: () -> Unit,
     ) {
-        ui.renderStaticUi(stage, state)
+        ui.renderStaticUi(stage, state, onBribeClicked, sprites)
     }
 
     private fun createStage(): Stage {
         val stage = stage(viewport = ScreenViewport(), batch = spriteBatch)
-        stage.setDebugUnderMouse(true)
         Gdx.input.inputProcessor = stage
         Scene2DSkin.defaultSkin = loadSkin()
 

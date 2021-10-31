@@ -5,25 +5,35 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisProgressBar
 import de.lostmekka.gamejam.teamsharks.data.GameState
+import de.lostmekka.gamejam.teamsharks.data.ResourceType
+import de.lostmekka.gamejam.teamsharks.sprite.Sprites
+import ktx.actors.onClick
 import ktx.actors.txt
 import ktx.scene2d.*
+import ktx.scene2d.vis.visImageButton
 import ktx.scene2d.vis.visTable
 import ktx.scene2d.vis.visTextButton
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-fun createStaticUi(stage: Stage, state: GameState): Actor {
-    return scene2d.visTable() {
+fun createStaticUi(stage: Stage, state: GameState, onBribeClicked: () -> Unit, sprites: Sprites): Actor {
+    return scene2d.visTable {
         setSize(stage.width, stage.height)
 
         visTable {
             it.expandX().fillX().row()
-            it.padTop(10f)
+            it.padTop(64f)
 
-            money(state.money) {
-                it.padRight(200f)
+            horizontalGroup {
+                // TODO Correct sprite
+                image(sprites.resourceIcons[ResourceType.IronOre]!!)
+                money(state.money)
+
+                padRight(200f)
             }
+
+
             awareness(state.enemyAwareness) {
                 it.padRight(200f)
             }
@@ -37,6 +47,8 @@ fun createStaticUi(stage: Stage, state: GameState): Actor {
 
                     pad(pad, 20f, pad, 20f)
                 }
+
+                onClick { onBribeClicked() }
             }
         }
 
