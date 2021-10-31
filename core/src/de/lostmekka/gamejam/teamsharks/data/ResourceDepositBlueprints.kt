@@ -25,4 +25,12 @@ val resourceDepositBlueprints: Map<ResourceType, ResourceDepositBlueprint> = map
             resourceAmount = (Random.nextFloat() * (depth * 5f + 100f) + 100f).roundToInt(),
         )
     },
+    ResourceType.Coal to ResourceDepositBlueprint { depth ->
+        ResourceDeposit(
+            depth = depth,
+            height = 96f,
+            resourceType = ResourceType.Coal,
+            resourceAmount = (Random.nextFloat() * (depth * 5f + 100f) + 100f).roundToInt(),
+        )
+    },
 )

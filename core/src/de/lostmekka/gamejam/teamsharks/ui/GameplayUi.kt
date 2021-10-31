@@ -39,13 +39,7 @@ class GameplayUi {
                 row()
 
                 for (c in content) {
-                    when (c.resourceType) {
-                        ResourceType.IronOre -> visImage(sprites.icons[2])
-                        ResourceType.CopperOre -> visImage(sprites.icons[3])
-                        ResourceType.IronIngot -> visImage(sprites.icons[8])
-                        ResourceType.CopperIngot -> visImage(sprites.icons[9])
-                    }
-
+                    visImage(sprites.resourceIcons.getValue(c.resourceType))
                     visLabel(c.resourceType.name) { it.expandX().fillX() }
                     visLabel(c.amount.toString()) { it.expandX().width(50f) }
 

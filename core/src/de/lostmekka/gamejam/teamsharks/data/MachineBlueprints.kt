@@ -1,5 +1,6 @@
 package de.lostmekka.gamejam.teamsharks.data
 
+import de.lostmekka.gamejam.teamsharks.data.ResourceType.*
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 import kotlin.math.pow
 
@@ -22,7 +23,7 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
                     recipes = listOf(
                         Recipe(
                             consumedResources = listOf(2 * ResourceType.IronOre),
-                            producedResources = listOf(1 * ResourceType.IronIngot),
+                            producedResources = listOf(1 * IronIngot),
                             baseDuration = 10f,
                         ),
                         Recipe(
@@ -36,5 +37,27 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
                 )
             }
         )
-    }
+    },
+    MachineType.Furnace to (1..5).map { tier ->
+        MachineBlueprint(
+            name = "Furnace",
+            cost = 200 * 5f.pow(tier - 1).toInt(),
+            createFunction = { pos ->
+                Machine(
+                    machineType = MachineType.Furnace,
+                    position = pos,
+                    name = "Furnace",
+                    recipes = listOf(
+                        Recipe(
+                            consumedResources = listOf(2 * Coal, 5 * IronIngot),
+                            producedResources = listOf(1 * SteelBeam),
+                            baseDuration = 25f,
+                        ),
+                    ),
+                    tier = tier,
+                    speedModifier = tier.toFloat(),
+                )
+            }
+        )
+    },
 )

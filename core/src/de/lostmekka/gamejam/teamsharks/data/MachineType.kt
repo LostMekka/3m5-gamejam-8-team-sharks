@@ -4,5 +4,6 @@ enum class MachineType {
     OreCrusher,
     Drill,
     Smelter,
+    Furnace,
     Engine,
 }

@@ -9,6 +9,7 @@ import ktx.assets.disposeSafely
 class Sprites {
     private val allSprites = mutableListOf<Texture>()
 
+    val resourceIcons = ResourceType.values().associateWith { loadTexture("sprites/resources/$it.png") }
     val icons = loadTexture("sprites/Icons.png")
         .split(27, 27, 50, 1)
     val backgroundEarth = loadTexture("sprites/background/BgEarth.png")
@@ -19,6 +20,7 @@ class Sprites {
             mapOf(
                 ResourceType.IronOre to it[3],
                 ResourceType.CopperOre to it[1],
+                ResourceType.Coal to it[0],
             )
         }
     val machinesSprites = loadTexture("sprites/background/Machines.png")
@@ -29,6 +31,7 @@ class Sprites {
                 MachineType.Engine to it[1],
                 MachineType.Drill to it[2],
                 MachineType.Smelter to it[3],
+                MachineType.Furnace to it[3], // TODO: create separate sprite
             )
         }
 
