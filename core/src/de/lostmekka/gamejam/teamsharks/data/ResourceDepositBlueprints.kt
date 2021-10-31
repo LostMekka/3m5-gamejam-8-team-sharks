@@ -14,7 +14,7 @@ val resourceDepositBlueprints: Map<ResourceType, ResourceDepositBlueprint> = map
             depth = depth,
             height = 96f,
             resourceType = ResourceType.IronOre,
-            resourceAmount = (Random.nextFloat() * (depth + 100f) + 20f).roundToInt(),
+            resourceAmount = (Random.nextFloat() * (depth * 5f + 100f) + 100f).roundToInt(),
         )
     },
     ResourceType.CopperOre to ResourceDepositBlueprint { depth ->
@@ -22,7 +22,7 @@ val resourceDepositBlueprints: Map<ResourceType, ResourceDepositBlueprint> = map
             depth = depth,
             height = 96f,
             resourceType = ResourceType.CopperOre,
-            resourceAmount = (Random.nextFloat() * (depth + 100f) + 20f).roundToInt(),
+            resourceAmount = (Random.nextFloat() * (depth * 5f + 100f) + 100f).roundToInt(),
         )
     },
 )
