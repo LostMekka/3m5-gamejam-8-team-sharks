@@ -157,6 +157,15 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
                 it.color = if (deposit.isMined) Color.WHITE else Color.RED
                 it.draw(sprites.resourceDeposits.getValue(deposit.resourceType), rect)
             }
+            // Draw Mined background
+            it.color = Color.WHITE
+            it.draw(
+                sprites.backgroundMined,
+                grid.rect.getX() - 100f,
+                grid.rect.getY() + 500f,
+                sprites.backgroundMined.width.toFloat(),
+                sprites.backgroundMined.height.toFloat(),
+            )
             // Draw Factory
             it.color = Color.WHITE
             it.draw(

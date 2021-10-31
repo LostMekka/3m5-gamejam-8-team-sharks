@@ -12,7 +12,7 @@ object GameConstants {
     val dirtLayerScale = 64
     val dirtLayerColorVariance = 0.2f
 
-    val machineScale = 99f
+    val machineScale = 99
 
     val factoryBaseMiningSpeed = 1f
     val factoryBaseDrillingSpeed = 5f
