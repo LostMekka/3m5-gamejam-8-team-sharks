@@ -5,5 +5,6 @@ enum class MachineType {
     MiningModule,
     Smelter,
     Furnace,
+    WireMaker,
     DrillModule,
 }

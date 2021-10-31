@@ -5,6 +5,7 @@ enum class ResourceType {
     CopperOre,
     IronIngot,
     CopperIngot,
+    CopperWire,
     Coal,
     SteelBeam,
     //...

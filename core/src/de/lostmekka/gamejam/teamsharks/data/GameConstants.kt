@@ -22,6 +22,7 @@ object GameConstants {
         ResourceType.IronIngot to 5,
         ResourceType.CopperOre to 1,
         ResourceType.CopperIngot to 5,
+        ResourceType.CopperWire to 5,
         ResourceType.Coal to 1,
         ResourceType.SteelBeam to 50,
     )

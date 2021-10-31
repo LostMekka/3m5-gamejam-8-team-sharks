@@ -181,7 +181,7 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
                     val cell = cell(x, y)
                     val machine = state.factory[cell.pos] ?: continue
                     it.draw(
-                        sprites.machinesSprites[machine.machineType],
+                        sprites.machinesSprites[machine.machineType] ?: sprites.machineErrorSprite,
                         cell.rect.getX(),
                         cell.rect.getY(),
                         cell.rect.height,

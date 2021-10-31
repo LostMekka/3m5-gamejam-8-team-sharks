@@ -60,6 +60,28 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
             }
         )
     },
+    MachineType.WireMaker to (1..5).map { tier ->
+        MachineBlueprint(
+            name = "Wire Maker",
+            cost = 100 * 5f.pow(tier - 1).toInt(),
+            createFunction = { pos ->
+                Machine(
+                    machineType = MachineType.WireMaker,
+                    position = pos,
+                    name = "Wire Maker",
+                    recipes = listOf(
+                        Recipe(
+                            consumedResources = listOf(1 * CopperIngot),
+                            producedResources = listOf(2 * CopperWire),
+                            baseDuration = 10f,
+                        ),
+                    ),
+                    tier = tier,
+                    speedModifier = tier.toFloat(),
+                )
+            }
+        )
+    },
     MachineType.DrillModule to (1..100).map { tier ->
         MachineBlueprint(
             name = "Drill Module",

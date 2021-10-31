@@ -34,8 +34,11 @@ class Sprites {
                 MachineType.MiningModule to it[2],
                 MachineType.Smelter to it[3],
                 MachineType.Furnace to it[3], // TODO: create separate sprite
+                MachineType.WireMaker to it[5],
             )
         }
+    val machineErrorSprite = loadTexture("sprites/background/Machines.png")
+        .split(machineScale, machineScale, 5, 5)[24]
 
     fun disposeSafely() {
         allSprites.disposeSafely()

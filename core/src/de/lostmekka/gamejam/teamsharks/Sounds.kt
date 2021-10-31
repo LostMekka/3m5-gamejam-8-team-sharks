@@ -12,8 +12,9 @@ class Sounds {
 
     val backgroundAtmo = loadMusic("audio/background/machine_atmo-loop.mp3", 1.4)
     val machineSounds = mapOf(
-        MachineType.Smelter to loadSound("audio/machines/steam.mp3"),
+        MachineType.Smelter to loadSound("audio/machines/steam2.mp3"),
         MachineType.Furnace to loadSound("audio/machines/steam.mp3"),
+        MachineType.WireMaker to loadSound("audio/machines/hammer-impact.mp3"),
     )
 
     fun disposeSafely() {
