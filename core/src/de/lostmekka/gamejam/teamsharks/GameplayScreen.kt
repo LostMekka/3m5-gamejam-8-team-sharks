@@ -397,7 +397,7 @@ class GameplayScreen : KtxScreen, GameEventHandler {
     private fun createStage(): Stage {
         val stage = stage(viewport = ScreenViewport(), batch = spriteBatch)
         Gdx.input.inputProcessor = stage
-        Scene2DSkin.defaultSkin = loadSkin()
+        Scene2DSkin.defaultSkin = loadSkin(sprites)
 
         return stage
     }

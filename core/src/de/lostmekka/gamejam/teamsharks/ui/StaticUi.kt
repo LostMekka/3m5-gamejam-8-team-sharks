@@ -66,7 +66,10 @@ fun createStaticUi(
 private class Awareness(value: Float) :
     VisProgressBar(0f, 1f, 0.001f, false) {
 
-    init { this.value = value }
+    init {
+        this.value = value
+        isDisabled = value > 0.9f
+    }
 
     override fun getPrefWidth() = 400f
 }

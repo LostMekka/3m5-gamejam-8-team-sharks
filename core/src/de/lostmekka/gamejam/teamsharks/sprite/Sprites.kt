@@ -54,6 +54,12 @@ class Sprites {
     val machineErrorSprite = loadTexture("sprites/background/Machines.png")
         .split(machineScale, machineScale, 5, 5)[24]
 
+    val uiSprites = mapOf(
+        Pair("progressFillHorizontal", loadTexture("sprites/ui/ProgressFillH.png")),
+        Pair("progressFillHorizontalAttention", loadTexture("sprites/ui/ProgressFillHAttention.png")),
+        Pair("progressFillVertical", loadTexture("sprites/ui/ProgressFillV.png")),
+    )
+
     val dirtParticlesPool = ParticleEffectPool(
         ParticleEffect()
             .also {
