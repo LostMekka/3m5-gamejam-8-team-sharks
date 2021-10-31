@@ -264,7 +264,7 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
             currentDepth = state.factory.depth,
             money = state.money,
             awareness = state.enemyAwareness,
-            bribeCost = 10,
+            bribeCost = 10 + state.factory.drillingSpeed.toInt() + state.factory.miningSpeed.toInt(),
             onBribeClicked = { state.enemyAwareness *= 0.5f }
         )
         stage.draw()
