@@ -1,16 +1,18 @@
 package de.lostmekka.gamejam.teamsharks.ui
 
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.kotcrab.vis.ui.widget.VisTable
+import com.badlogic.gdx.utils.Align
+import de.lostmekka.gamejam.teamsharks.GameplayScreen
 import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.ResourceAmount
 import ktx.actors.onClick
 import ktx.scene2d.vis.*
 import de.lostmekka.gamejam.teamsharks.data.times
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
+import de.lostmekka.gamejam.teamsharks.util.GridPosition
+import ktx.actors.centerPosition
 import ktx.actors.minusAssign
 import ktx.actors.plusAssign
 import ktx.scene2d.scene2d
@@ -62,6 +64,54 @@ class GameplayUi {
             }
         }
         .also { inventory = it }
+    }
+
+    private var emptyCells : HashMap<GridPosition, Actor> = hashMapOf()
+    private var popup : Actor? = null
+    fun renderEmptyCell(
+        stage: Stage,
+        pos: GridPosition,
+        rect: Rectangle,
+        buyOptions: List<GameplayScreen.BuyOption>,
+        onBuyClicked: (GameplayScreen.BuyOption) -> Unit,
+    ) {
+        emptyCells[pos]?.let { stage -= it }
+
+        stage += scene2d.visTable {
+            setPosition(rect.x, rect.y + rect.height)
+            setSize(rect.width, rect.height)
+
+            visTextButton("Buy") {
+                onClick {
+                    stage += scene2d.visDialog("Buy machine") {
+                        centerPosition(stage.width, stage.height)
+                        width = 200f
+                        align(Align.topLeft)
+
+                        for (option in buyOptions) {
+                           visLabel(option.name) { it.padRight(10f) }
+                           visLabel(option.cost.toString())  { it.padRight(10f) }
+                           visTextButton("Buy") {
+                               onClick {
+                                   onBuyClicked(option)
+                                   popup?.also { stage -= it }
+                                   popup = null
+                               }
+                           }
+                           row()
+                        }
+                    }.also {
+                        popup = it
+                    }
+                }
+            }
+
+        }.also { emptyCells[pos] = it }
+
+        popup?.let {
+            stage -= it
+            stage += it
+        }
     }
 }
 

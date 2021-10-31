@@ -190,6 +190,7 @@ class GameplayScreen : KtxScreen {
                 val machine = state.factory[cell.pos]
                 if (machine == null) {
                     renderEmptyCell(
+                        pos = cell.pos,
                         rect = cell.rect,
                         buyOptions = buyOptions,
                         onBuyClicked = { state.buyMachine(cell.pos, it.blueprint) }
@@ -197,6 +198,7 @@ class GameplayScreen : KtxScreen {
                 } else {
                     val nextTier = machineBlueprints[machine.machineType]?.getOrNull(machine.tier)
                     renderMachineCell(
+                        pos = cell.pos,
                         rect = cell.rect,
                         machine = MachineStatus(
                             name = machine.name,
@@ -236,11 +238,12 @@ class GameplayScreen : KtxScreen {
     )
 
     fun renderEmptyCell(
+        pos: GridPosition,
         rect: Rectangle,
         buyOptions: List<BuyOption>,
         onBuyClicked: (BuyOption) -> Unit,
     ) {
-        // TODO: implement
+        ui.renderEmptyCell(stage, pos, convertToUiCoords(rect, true), buyOptions, onBuyClicked)
     }
 
     data class MachineStatus(
@@ -253,6 +256,7 @@ class GameplayScreen : KtxScreen {
     )
 
     fun renderMachineCell(
+        pos: GridPosition,
         rect: Rectangle,
         machine: MachineStatus,
         onUpgradeClicked: () -> Unit,
@@ -267,9 +271,7 @@ class GameplayScreen : KtxScreen {
     ) {
         ui.renderInventory(
             stage,
-            stage.viewport.unproject(gameplayViewport.project(Vector2(rect.x, rect.y))).let {
-                Rectangle(it.x, it.y, rect.width, rect.height)
-            },
+            convertToUiCoords(rect),
             content,
             onSellClicked,
             sprites
@@ -305,6 +307,15 @@ class GameplayScreen : KtxScreen {
     override fun resize(width: Int, height: Int) {
         gameplayViewport.update(width, height)
         stage.viewport.update(width, height)
+    }
+
+    fun convertToUiCoords(rect: Rectangle, flipV: Boolean = false): Rectangle {
+        return stage.viewport.unproject(gameplayViewport.project(Vector2(rect.x, rect.y))).let {
+            if (flipV)
+                Rectangle(it.x, stage.viewport.screenHeight - it.y, rect.width, rect.height)
+            else
+                Rectangle(it.x, it.y, rect.width, rect.height)
+        }
     }
 
     override fun dispose() {

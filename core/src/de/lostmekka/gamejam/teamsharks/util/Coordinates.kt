@@ -1,6 +1,19 @@
 package de.lostmekka.gamejam.teamsharks.util
 
-data class GridPosition(val x: Int, val y: Int)
+data class GridPosition(val x: Int, val y: Int) {
+    override fun hashCode(): Int = x * 100 + y
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GridPosition
+
+        if (x != other.x) return false
+        if (y != other.y) return false
+
+        return true
+    }
+}
 
 data class GridSize(val x: Int, val y: Int)
 infix fun Int.by(y: Int) = GridSize(this, y)
