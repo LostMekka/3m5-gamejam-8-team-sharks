@@ -19,9 +19,25 @@ import ktx.scene2d.scrollPane
 
 class GameplayUi {
     private var staticUi : Actor? = null
-    fun renderStaticUi(stage: Stage, state: GameState, onBribeClicked: () -> Unit, sprites: Sprites) {
+    fun renderStaticUi(
+        stage: Stage,
+        sprites: Sprites,
+        currentDepth: Float,
+        money: Int,
+        awareness: Float,
+        bribeCost: Int,
+        onBribeClicked: () -> Unit,
+    ) {
         staticUi?.let { stage -= it }
-        stage += createStaticUi(stage, state, onBribeClicked, sprites).also { staticUi = it }
+        stage += createStaticUi(
+            stage,
+            sprites,
+            currentDepth,
+            money,
+            awareness,
+            bribeCost,
+            onBribeClicked,
+        ).also { staticUi = it }
     }
 
     private var inventory : Actor? = null
@@ -92,28 +108,38 @@ class GameplayUi {
 
                     onClick {
                         stage += scene2d.visDialog("Buy machine") {
-                            centerPosition(stage.width, stage.height)
                             width = 200f
-                            align(Align.topLeft)
+                            height = (2+ buyOptions.size) * 33f
+                            centerPosition(stage.width, stage.height)
 
-                            for (option in buyOptions) {
-                                visLabel(option.name) { it.padRight(10f) }
-                                visLabel(option.cost.toString())  { it.padRight(10f) }
-                                visTextButton("Buy") {
-                                    onChange {
-                                        onBuyClicked(option)
-                                        popup?.also { stage -= it }
-                                        popup = null
+                            contentTable += visTable(defaultSpacing = true) {
+                                setFillParent(true)
+                                align(Align.topLeft)
 
-                                        emptyCells[pos]?.let { stage -= it }
-                                        emptyCells.remove(pos)
+                                for (option in buyOptions) {
+                                    visLabel(option.name) {
+                                        it.align(Align.left)
                                     }
-                                    isDisabled = !option.canAfford
-                                    it.width(40f)
+                                    visLabel(option.cost.toString()) {
+                                        it.align(Align.right)
+                                    }
+                                    visTextButton("Buy") {
+                                        onChange {
+                                            onBuyClicked(option)
+                                            popup?.also { stage -= it }
+                                            popup = null
+
+                                            emptyCells[pos]?.let { stage -= it }
+                                            emptyCells.remove(pos)
+                                        }
+                                        isDisabled = !option.canAfford
+                                        it.width(40f)
+                                    }
+                                    row()
                                 }
-                                row()
                             }
-                            visTextButton("Back") {
+
+                            buttonsTable += visTextButton("Back") {
                                 onClick {
                                     popup?.also { stage -= it }
                                     popup = null

@@ -4,20 +4,25 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisProgressBar
-import de.lostmekka.gamejam.teamsharks.data.GameState
-import de.lostmekka.gamejam.teamsharks.data.ResourceType
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
 import ktx.actors.onClick
 import ktx.actors.txt
 import ktx.scene2d.*
-import ktx.scene2d.vis.visImageButton
 import ktx.scene2d.vis.visTable
 import ktx.scene2d.vis.visTextButton
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-fun createStaticUi(stage: Stage, state: GameState, onBribeClicked: () -> Unit, sprites: Sprites): Actor {
+fun createStaticUi(
+    stage: Stage,
+    sprites: Sprites,
+    currentDepth: Float,
+    money: Int,
+    awareness: Float,
+    bribeCost: Int,
+    onBribeClicked: () -> Unit,
+): Actor {
     return scene2d.visTable {
         setSize(stage.width, stage.height)
 
@@ -27,17 +32,17 @@ fun createStaticUi(stage: Stage, state: GameState, onBribeClicked: () -> Unit, s
 
             horizontalGroup {
                 image(sprites.icons[4])
-                money(state.money)
+                money(money)
 
                 padRight(200f)
             }
 
 
-            awareness(state.enemyAwareness) {
+            awareness(awareness) {
                 it.padRight(200f)
             }
 
-            visTextButton("Bribe!") {
+            visTextButton("Bribe! (${bribeCost})") {
                 also {
                     val height = (0 until this.rows).fold(0f) { acc, i ->
                         acc + getRowMinHeight(i)
@@ -48,6 +53,7 @@ fun createStaticUi(stage: Stage, state: GameState, onBribeClicked: () -> Unit, s
                 }
 
                 onClick { onBribeClicked() }
+                isDisabled = money < bribeCost
             }
         }
 
@@ -61,13 +67,7 @@ fun createStaticUi(stage: Stage, state: GameState, onBribeClicked: () -> Unit, s
 private class Awareness(min: Float, max: Float, stepSize: Float, vertical: Boolean) :
     VisProgressBar(min, max, stepSize, vertical) {
 
-    fun update(value: Float) {
-        this.value = value
-    }
-
-    override fun getPrefWidth(): Float {
-        return 400f
-    }
+    override fun getPrefWidth() = 400f
 }
 
 @Scene2dDsl
@@ -85,12 +85,8 @@ private inline fun <S> KWidget<S>.awareness(
 
 /// Money widget
 
-private class Money(value: Int) : VisLabel("₽ $value") {
-    override fun getPrefWidth(): Float = 200f
-
-    fun update(value: Int) {
-        txt = "₽ $value"
-    }
+private class Money(value: Int) : VisLabel("$value") {
+    override fun getPrefWidth() = 200f
 }
 
 @Scene2dDsl

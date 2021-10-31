@@ -287,7 +287,15 @@ class GameplayScreen : KtxScreen {
         bribeCost: Int,
         onBribeClicked: () -> Unit,
     ) {
-        ui.renderStaticUi(stage, state, onBribeClicked, sprites)
+        ui.renderStaticUi(
+            stage,
+            sprites,
+            currentDepth,
+            money,
+            awareness,
+            bribeCost,
+            onBribeClicked,
+        )
     }
 
     fun renderResourceDepositGui(
