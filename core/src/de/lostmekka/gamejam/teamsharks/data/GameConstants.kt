@@ -19,6 +19,9 @@ object GameConstants {
 
     val factoryBaseMiningSpeed = 1f
     val factoryBaseDrillingSpeed = 5f
+    val factoryBaseAwarenessMultiplier = 0.001f
+
+    val bribeCostPerDepth = 0.2f
 
     val resourcePrices = mutableMapOf(
         ResourceType.IronOre to 1,

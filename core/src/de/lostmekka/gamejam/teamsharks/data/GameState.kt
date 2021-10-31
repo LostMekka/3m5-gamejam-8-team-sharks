@@ -1,7 +1,7 @@
 package de.lostmekka.gamejam.teamsharks.data
 
 import com.badlogic.gdx.graphics.Color
-import de.lostmekka.gamejam.teamsharks.SoundEventHandler
+import de.lostmekka.gamejam.teamsharks.GameEventHandler
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerColorVariance
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.resourcePrices
@@ -16,13 +16,16 @@ class GameState {
     val currentResourceDeposits = mutableListOf<ResourceDeposit>()
     var nextResourceDepositDepth = 0f
     var dirtLayerOffset = 0f
+    var gameLost = false
+
+    val bribeCost get() = (GameConstants.bribeCostPerDepth * factory.depth * enemyAwareness).toInt()
 
     init {
         currentResourceDeposits += resourceDepositBlueprints.values.random().createFunction(1f)
     }
 
-    fun update(deltaTime: Float, soundEventHandler: SoundEventHandler) {
-        factory.update(deltaTime, currentResourceDeposits, soundEventHandler)
+    fun update(deltaTime: Float, gameEventHandler: GameEventHandler) {
+        factory.update(deltaTime, currentResourceDeposits, gameEventHandler)
         val deltaDepth = deltaTime * factory.drillingSpeed
 
         val minDepositDepth = factory.depth - GameConstants.grid.rect.height - 500
@@ -33,6 +36,11 @@ class GameState {
         }
 
         dirtLayerOffset = (dirtLayerOffset + deltaDepth) % (dirtLayerScale)
+
+        if (enemyAwareness >= 1f) {
+            gameLost = true
+            gameEventHandler.onGameLost()
+        }
     }
 
     private fun randomTintColor(): Color {
@@ -40,12 +48,12 @@ class GameState {
         return Color(r, r, r, 1f)
     }
 
-    fun sellResource(resourceAmount: ResourceAmount) {
+    fun sellResource(resourceAmount: ResourceAmount): Boolean {
         val (type, amount) = resourceAmount
-        if (factory[type] >= amount) {
-            factory -= amount * type
-            money += amount * resourcePrices.getOrDefault(type, 1)
-        }
+        if (factory[type] < amount) return false
+        factory -= amount * type
+        money += amount * resourcePrices.getOrDefault(type, 1)
+        return true
     }
 
     fun upgradeMachine(gridPosition: GridPosition, blueprint: MachineBlueprint) {

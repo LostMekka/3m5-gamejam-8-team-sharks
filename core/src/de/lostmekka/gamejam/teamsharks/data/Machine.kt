@@ -1,6 +1,6 @@
 package de.lostmekka.gamejam.teamsharks.data
 
-import de.lostmekka.gamejam.teamsharks.SoundEventHandler
+import de.lostmekka.gamejam.teamsharks.GameEventHandler
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 
 class Machine(
@@ -12,6 +12,7 @@ class Machine(
     val speedModifier: Float = 1f,
     val drillSpeedBonus: Float = 0f,
     val miningSpeedBonus: Float = 0f,
+    val awarenessFactorBonus: Float = 0f,
 ) {
     private val namePrefix = listOf(
         "Better",
@@ -33,7 +34,7 @@ class Machine(
 
     private var currentRecipe: Recipe? = null
 
-    fun update(deltaTime: Float, factory: Factory, soundEventHandler: SoundEventHandler) {
+    fun update(deltaTime: Float, factory: Factory, gameEventHandler: GameEventHandler) {
         if (currentRecipe == null) startRandomRecipe(factory)
         var timeLeft = deltaTime
         while (currentRecipe != null && timeLeft > 0f) {
@@ -48,7 +49,7 @@ class Machine(
                 timeLeft -= timeLeft * progressLeft / possibleProgress
                 recipe.producedResources.forEach { factory += it }
                 startRandomRecipe(factory)
-                soundEventHandler.onMachineFinished(machineType)
+                gameEventHandler.onMachineFinished(machineType)
             }
         }
     }

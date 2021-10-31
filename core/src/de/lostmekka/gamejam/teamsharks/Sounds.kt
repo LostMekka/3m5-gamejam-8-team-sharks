@@ -10,6 +10,9 @@ class Sounds {
     private val allSounds = mutableListOf<Sound>()
     private val allMusics = mutableListOf<Music>()
 
+    val buySound = loadSound("audio/money.mp3")
+    val bribeSound = loadSound("audio/bribe.mp3")
+    val gameOverSound = loadSound("audio/youlost.mp3")
     val backgroundAtmo = loadMusic("audio/background/machine_atmo-loop.mp3", 1.45)
     val machineSounds = mapOf(
         MachineType.Smelter to loadSound("audio/machines/steam2.mp3"),

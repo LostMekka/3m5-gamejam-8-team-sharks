@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.borderSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
+import de.lostmekka.gamejam.teamsharks.data.GameConstants.factoryBaseAwarenessMultiplier
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.factoryHeight
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.factoryWidth
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.grid
@@ -75,11 +76,12 @@ private fun ResourceDeposit.rect(factoryDepth: Float): Rectangle {
     return Rectangle(x * side - size / 2f, y - size / 2f, size, size)
 }
 
-interface SoundEventHandler {
+interface GameEventHandler {
     fun onMachineFinished(type: MachineType)
+    fun onGameLost()
 }
 
-class GameplayScreen : KtxScreen, SoundEventHandler {
+class GameplayScreen : KtxScreen, GameEventHandler {
     private val font = BitmapFont()
     private val spriteBatch = SpriteBatch().apply {
         color = Color.WHITE
@@ -108,34 +110,63 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
 
     override fun onMachineFinished(type: MachineType) {
         sounds.machineSounds[type]?.play()
+        state.enemyAwareness += factoryBaseAwarenessMultiplier * state.factory.awarenessMultiplier
+    }
+
+    private fun onBribeClicked() {
+        if (state.money < state.bribeCost) return
+        state.enemyAwareness = 0f
+        state.money -= state.bribeCost
+    }
+
+    private fun onSellClicked(it: ResourceAmount) {
+        if (!state.sellResource(it)) return
+        sounds.buySound.play()
+    }
+
+    private fun onUpgradeClicked(cell: Cell, blueprint: MachineBlueprint) {
+        state.upgradeMachine(cell.pos, blueprint)
+        sounds.buySound.play()
+    }
+
+    private fun onBuyClicked(cell: Cell, option: BuyOption) {
+        state.buyMachine(cell.pos, option.blueprint)
+        sounds.buySound.play()
+    }
+
+    override fun onGameLost() {
+        sounds.backgroundAtmo.stop()
+        sounds.gameOverSound.play()
     }
 
     override fun render(delta: Float) {
         ifKeyPressed(Input.Keys.ESCAPE) { Gdx.app.exit() }
 
-        // TODO: remove these debug cheat keys
-        val delta = if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) delta * 50 else delta
-        ifKeyPressed(Input.Keys.NUM_9) { state.factory.drillingSpeed = 100f }
-        ifKeyPressed(Input.Keys.NUM_0) { state.factory.drillingSpeed = 5f }
-        ifKeyPressed(Input.Keys.NUM_1) { state.factory += 100 * ResourceType.IronOre }
-        ifKeyPressed(Input.Keys.NUM_2) { state.sellResource(1 * ResourceType.IronOre) }
-        ifKeyPressed(Input.Keys.Q) {
-            state.buyMachine(
-                GridPosition(0, 0),
-                machineBlueprints.getValue(MachineType.Smelter).first()
-            )
-        }
-        ifKeyPressed(Input.Keys.W) {
-            val pos = GridPosition(0, 0)
-            val machine = state.factory[pos]
-            machineBlueprints
-                .getValue(MachineType.Smelter)
-                .getOrNull(machine?.tier ?: -1)
-                ?.also { state.upgradeMachine(pos, it) }
-        }
+        if (!state.gameLost) {
+            // TODO: remove these debug cheat keys
+            val delta = if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) delta * 50 else delta
+            ifKeyPressed(Input.Keys.NUM_9) { state.factory.drillingSpeed = 100f }
+            ifKeyPressed(Input.Keys.NUM_0) { state.factory.drillingSpeed = 5f }
+            ifKeyPressed(Input.Keys.NUM_1) { state.factory += 100 * ResourceType.IronOre }
+            ifKeyPressed(Input.Keys.NUM_2) { state.sellResource(1 * ResourceType.IronOre) }
+            ifKeyPressed(Input.Keys.Q) {
+                state.buyMachine(
+                    GridPosition(0, 0),
+                    machineBlueprints.getValue(MachineType.Smelter).first()
+                )
+            }
+            ifKeyPressed(Input.Keys.W) {
+                val pos = GridPosition(0, 0)
+                val machine = state.factory[pos]
+                machineBlueprints
+                    .getValue(MachineType.Smelter)
+                    .getOrNull(machine?.tier ?: -1)
+                    ?.also { state.upgradeMachine(pos, it) }
+            }
 
-        state.update(delta, this)
-        stage.act(delta)
+            state.update(delta, this)
+            stage.act(delta)
+        }
 
         spriteBatch.use(gameplayCamera) {
             val dirtSize = dirtLayerScale.toFloat()
@@ -233,7 +264,7 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
                         pos = cell.pos,
                         rect = cell.rect,
                         buyOptions = buyOptions,
-                        onBuyClicked = { state.buyMachine(cell.pos, it.blueprint) }
+                        onBuyClicked = { onBuyClicked(cell, it) }
                     )
                 } else {
                     val nextTier = machineBlueprints[machine.machineType]?.getOrNull(machine.tier)
@@ -249,13 +280,13 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
                             upgradeAffordable = nextTier != null && state.money >= nextTier.cost,
                             upgradeCost = nextTier?.cost ?: 0,
                         ),
-                        onUpgradeClicked = { nextTier?.let { state.upgradeMachine(cell.pos, it) } }
+                        onUpgradeClicked = { nextTier?.let { onUpgradeClicked(cell, it) } }
                     )
                 }
             }
         }
         val inventoryContent = ResourceType.values().map { state.factory[it] * it }
-        renderInventory(inventorySpace.rect, inventoryContent) { state.sellResource(it) }
+        renderInventory(inventorySpace.rect, inventoryContent) { onSellClicked(it) }
         for (depot in state.currentResourceDeposits) {
             renderResourceDepositGui(depot.rect(state.factory.depth), depot.resourceType, depot.resourceAmount)
         }
@@ -264,8 +295,8 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
             currentDepth = state.factory.depth,
             money = state.money,
             awareness = state.enemyAwareness,
-            bribeCost = 10 + state.factory.drillingSpeed.toInt() + state.factory.miningSpeed.toInt(),
-            onBribeClicked = { state.enemyAwareness *= 0.5f }
+            bribeCost = state.bribeCost,
+            onBribeClicked = { this.onBribeClicked() },
         )
         stage.draw()
     }
