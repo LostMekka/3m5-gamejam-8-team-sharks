@@ -13,9 +13,7 @@ import ktx.scene2d.vis.*
 import de.lostmekka.gamejam.teamsharks.data.times
 import de.lostmekka.gamejam.teamsharks.sprite.Sprites
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
-import ktx.actors.centerPosition
-import ktx.actors.minusAssign
-import ktx.actors.plusAssign
+import ktx.actors.*
 import ktx.scene2d.scene2d
 import ktx.scene2d.scrollPane
 
@@ -51,27 +49,21 @@ class GameplayUi {
                     visLabel(c.resourceType.name) { it.expandX().fillX() }
                     visLabel(c.amount.toString()) { it.expandX().width(50f) }
 
-                    if (c.amount >= 1)
-                        visTextButton("1") {
-                            onClick { onSellClicked(1 * c.resourceType) }
-                            it.expandX().fillX().width(50f)
-                        }
-                    else
-                        visLabel("") { it.expandX().fillX().width(50f) }
-                    if (c.amount >= 10)
-                        visTextButton("10") {
-                            onClick { onSellClicked(10 * c.resourceType) }
-                            it.expandX().fillX().width(50f)
-                        }
-                    else
-                        visLabel("") { it.expandX().fillX().width(50f) }
-                    if (c.amount >= 100)
-                        visTextButton("100") {
-                            onClick { onSellClicked(100 * c.resourceType) }
-                            it.expandX().fillX().width(50f)
-                        }
-                    else
-                        visLabel("") { it.expandX().fillX().width(50f) }
+                    visTextButton("1") {
+                        onChange { onSellClicked(1 * c.resourceType) }
+                        it.expandX().fillX().width(50f)
+                        isDisabled = c.amount < 1
+                    }
+                    visTextButton("10") {
+                        onClick { onSellClicked(10 * c.resourceType) }
+                        it.expandX().fillX().width(50f)
+                        isDisabled = c.amount < 10
+                    }
+                    visTextButton("100") {
+                        onClick { onSellClicked(100 * c.resourceType) }
+                        it.expandX().fillX().width(50f)
+                        isDisabled = c.amount < 100
+                    }
                     row()
                 }
             }
@@ -91,22 +83,30 @@ class GameplayUi {
         emptyCells[pos]?.let { stage -= it }
 
         stage += scene2d.visTable {
-            setPosition(rect.x, rect.y)
+            align(Align.bottomLeft)
             setSize(rect.width, rect.height)
+            setPosition(rect.x, rect.y)
 
-            visTextButton("Buy") {
-                onClick {
-                    stage += scene2d.visDialog("Buy machine") {
-                        centerPosition(stage.width, stage.height)
-                        width = 200f
-                        align(Align.topLeft)
+            floatingGroup {
+                setFillParent(true)
 
-                        for (option in buyOptions) {
-                            visLabel(option.name) { it.padRight(10f) }
-                            visLabel(option.cost.toString())  { it.padRight(10f) }
-                            if (option.canAfford)
+                visTextButton("Buy") {
+                    setPosition(
+                        (rect.width - width) / 2,
+                        (rect.height - height) / 2,
+                    )
+
+                    onClick {
+                        stage += scene2d.visDialog("Buy machine") {
+                            centerPosition(stage.width, stage.height)
+                            width = 200f
+                            align(Align.topLeft)
+
+                            for (option in buyOptions) {
+                                visLabel(option.name) { it.padRight(10f) }
+                                visLabel(option.cost.toString())  { it.padRight(10f) }
                                 visTextButton("Buy") {
-                                    onClick {
+                                    onChange {
                                         onBuyClicked(option)
                                         popup?.also { stage -= it }
                                         popup = null
@@ -114,24 +114,23 @@ class GameplayUi {
                                         emptyCells[pos]?.let { stage -= it }
                                         emptyCells.remove(pos)
                                     }
+                                    isDisabled = !option.canAfford
                                     it.width(40f)
                                 }
-                            else
-                                visLabel("-") { it.width(40f) }
-                            row()
-                        }
-                        visTextButton("Back") {
-                            onClick {
-                                popup?.also { stage -= it }
-                                popup = null
+                                row()
                             }
+                            visTextButton("Back") {
+                                onClick {
+                                    popup?.also { stage -= it }
+                                    popup = null
+                                }
+                            }
+                        }.also {
+                            popup = it
                         }
-                    }.also {
-                        popup = it
                     }
                 }
             }
-
         }.also { emptyCells[pos] = it }
 
         popup?.let {

@@ -314,7 +314,7 @@ class GameplayScreen : KtxScreen {
     fun convertToUiCoords(rect: Rectangle, flipV: Boolean = false): Rectangle {
         return stage.viewport.unproject(gameplayViewport.project(Vector2(rect.x, rect.y))).let {
             if (flipV)
-                Rectangle(it.x, stage.viewport.screenHeight - it.y, rect.width, rect.height)
+                Rectangle(it.x, Gdx.graphics.height - it.y, rect.width, rect.height)
             else
                 Rectangle(it.x, it.y, rect.width, rect.height)
         }
