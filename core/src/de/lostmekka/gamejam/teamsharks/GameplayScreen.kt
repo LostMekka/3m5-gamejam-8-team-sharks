@@ -296,6 +296,7 @@ class GameplayScreen : KtxScreen {
             bribeCost,
             onBribeClicked,
         )
+        ui.renderHelpMenu(stage)
     }
 
     fun renderResourceDepositGui(

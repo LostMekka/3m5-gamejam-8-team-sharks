@@ -158,6 +158,54 @@ class GameplayUi {
             stage += it
         }
     }
+    fun renderHelpMenu(
+        stage: Stage,
+    ) {
+        stage += scene2d.visTable {
+            setPosition(40f, stage.height - 30f)
+
+            visTextButton("Story\nand Help") {
+                onClick {
+                    stage += scene2d.visDialog("Story and Help") {
+                        centerPosition(stage.width, stage.height)
+                        width = 500f
+                        height = 500f
+                        contentTable += visTextArea {
+                            setFillParent(true)
+                            text =
+                            """
+                            Hello and welcome to this game with weird and cruel world!
+                            
+                            The story is as follows: You have build a moving factory, which has a quarry below.
+                            This quarry can automatically dig the ground and extract several ores from the earth chunks.
+                            Suddenly there are other species on the planet besides you, they can hear and feel, what your factory is doing.
+                            Luckily for you - you can pay them with some roubles, so they will be less worried about your stuff.
+                            
+                            So, sell, what your factory produces, buy new machines, upgrade them, dig into the depths below
+                            and don't forget to Bribe with some roubles to support corruption and dictate your rules!
+                            """.trimIndent()
+                        }
+
+                        visTextButton("Back") {
+                            align(Align.topLeft)
+                            onClick {
+                                popup?.also { stage -= it }
+                                popup = null
+                            }
+                        }
+                    }.also {
+                        popup = it
+                    }
+                }
+            }
+
+        }
+
+        popup?.let {
+            stage -= it
+            stage += it
+        }
+    }
 }
 
 
