@@ -47,18 +47,27 @@ class GameplayUi {
                     visLabel(c.resourceType.name) { it.expandX().fillX() }
                     visLabel(c.amount.toString()) { it.expandX().width(50f) }
 
-                    visTextButton("1") {
-                        onClick { onSellClicked(1 * c.resourceType) }
-                        it.expandX().fillX().width(50f)
-                    }
-                    visTextButton("10") {
-                        onClick { onSellClicked(10 * c.resourceType) }
-                        it.expandX().fillX().width(50f)
-                    }
-                    visTextButton("100") {
-                        onClick { onSellClicked(100 * c.resourceType) }
-                        it.expandX().fillX().width(50f)
-                    }
+                    if (c.amount >= 1)
+                        visTextButton("1") {
+                            onClick { onSellClicked(1 * c.resourceType) }
+                            it.expandX().fillX().width(50f)
+                        }
+                    else
+                        visLabel("") { it.expandX().fillX().width(50f) }
+                    if (c.amount >= 10)
+                        visTextButton("10") {
+                            onClick { onSellClicked(10 * c.resourceType) }
+                            it.expandX().fillX().width(50f)
+                        }
+                    else
+                        visLabel("") { it.expandX().fillX().width(50f) }
+                    if (c.amount >= 100)
+                        visTextButton("100") {
+                            onClick { onSellClicked(100 * c.resourceType) }
+                            it.expandX().fillX().width(50f)
+                        }
+                    else
+                        visLabel("") { it.expandX().fillX().width(50f) }
                     row()
                 }
             }
@@ -78,7 +87,7 @@ class GameplayUi {
         emptyCells[pos]?.let { stage -= it }
 
         stage += scene2d.visTable {
-            setPosition(rect.x, rect.y + rect.height)
+            setPosition(rect.x, rect.y)
             setSize(rect.width, rect.height)
 
             visTextButton("Buy") {
@@ -89,16 +98,29 @@ class GameplayUi {
                         align(Align.topLeft)
 
                         for (option in buyOptions) {
-                           visLabel(option.name) { it.padRight(10f) }
-                           visLabel(option.cost.toString())  { it.padRight(10f) }
-                           visTextButton("Buy") {
-                               onClick {
-                                   onBuyClicked(option)
-                                   popup?.also { stage -= it }
-                                   popup = null
-                               }
-                           }
-                           row()
+                            visLabel(option.name) { it.padRight(10f) }
+                            visLabel(option.cost.toString())  { it.padRight(10f) }
+                            if (option.canAfford)
+                                visTextButton("Buy") {
+                                    onClick {
+                                        onBuyClicked(option)
+                                        popup?.also { stage -= it }
+                                        popup = null
+
+                                        emptyCells[pos]?.let { stage -= it }
+                                        emptyCells.remove(pos)
+                                    }
+                                    it.width(40f)
+                                }
+                            else
+                                visLabel("-") { it.width(40f) }
+                            row()
+                        }
+                        visTextButton("Back") {
+                            onClick {
+                                popup?.also { stage -= it }
+                                popup = null
+                            }
                         }
                     }.also {
                         popup = it
