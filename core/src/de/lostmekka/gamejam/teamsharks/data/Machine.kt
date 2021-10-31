@@ -54,6 +54,11 @@ class Machine(
         }
     }
 
+    fun resumeRecipe(oldMachine: Machine) {
+        currentRecipe = oldMachine.currentRecipe
+        progress = oldMachine.progress
+    }
+
     private fun startRandomRecipe(factory: Factory) {
         val recipe = recipes
             .filter { recipe -> recipe.consumedResources.all { it in factory } }

@@ -59,8 +59,10 @@ class GameState {
     fun upgradeMachine(gridPosition: GridPosition, blueprint: MachineBlueprint) {
         val cost = blueprint.cost
         if (money < cost) return
-        factory[gridPosition] ?: return
-        factory[gridPosition] = blueprint.createFunction(gridPosition)
+        val oldMachine = factory[gridPosition] ?: return
+        val newMachine = blueprint.createFunction(gridPosition)
+        newMachine.resumeRecipe(oldMachine)
+        factory[gridPosition] = newMachine
         money -= cost
     }
 
