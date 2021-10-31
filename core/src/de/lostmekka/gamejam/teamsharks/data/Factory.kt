@@ -1,5 +1,6 @@
 package de.lostmekka.gamejam.teamsharks.data
 
+import de.lostmekka.gamejam.teamsharks.SoundEventHandler
 import de.lostmekka.gamejam.teamsharks.rect
 import de.lostmekka.gamejam.teamsharks.util.GridPosition
 
@@ -10,12 +11,12 @@ class Factory {
     var drillingSpeed = GameConstants.factoryBaseDrillingSpeed
     var miningSpeed = GameConstants.factoryBaseMiningSpeed
 
-    fun update(deltaTime: Float, deposits: List<ResourceDeposit>) {
+    fun update(deltaTime: Float, deposits: List<ResourceDeposit>, soundEventHandler: SoundEventHandler) {
         drillingSpeed = GameConstants.factoryBaseDrillingSpeed * bonusPercentage { drillSpeedPercentageBonus }
         miningSpeed = GameConstants.factoryBaseMiningSpeed * bonusPercentage { miningSpeedPercentageBonus }
 
         depth += drillingSpeed * deltaTime
-        machines.values.forEach { it.update(deltaTime, this) }
+        machines.values.forEach { it.update(deltaTime, this, soundEventHandler) }
         val coveringHeightRange = (depth - GameConstants.grid.rect.height)..depth
         deposits.forEach { this += it.update(deltaTime, miningSpeed, coveringHeightRange) }
     }

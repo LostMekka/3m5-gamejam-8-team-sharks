@@ -16,7 +16,6 @@ import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.grid
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.gridSize
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.inventorySpace
-import de.lostmekka.gamejam.teamsharks.data.GameConstants.machineScale
 import de.lostmekka.gamejam.teamsharks.data.GameState
 import de.lostmekka.gamejam.teamsharks.data.MachineBlueprint
 import de.lostmekka.gamejam.teamsharks.data.MachineType
@@ -74,7 +73,11 @@ private fun ResourceDeposit.rect(factoryDepth: Float): Rectangle {
     return Rectangle(x * side - size / 2f, y - size / 2f, size, size)
 }
 
-class GameplayScreen : KtxScreen {
+interface SoundEventHandler {
+    fun onMachineFinished(type: MachineType)
+}
+
+class GameplayScreen : KtxScreen, SoundEventHandler {
     private val font = BitmapFont()
     private val spriteBatch = SpriteBatch().apply {
         color = Color.WHITE
@@ -84,6 +87,7 @@ class GameplayScreen : KtxScreen {
         setAutoShapeType(true)
     }
     private val sprites = Sprites()
+    private val sounds = Sounds()
     private val gameplayCamera = OrthographicCamera()
     private val gameplayViewport = ScreenViewport(gameplayCamera)
     private val stage: Stage = createStage()
@@ -91,10 +95,24 @@ class GameplayScreen : KtxScreen {
 
     private val state = GameState()
 
+    override fun show() {
+        sounds.backgroundAtmo.play()
+        sounds.backgroundAtmo.isLooping = true
+    }
+
+    override fun hide() {
+        sounds.backgroundAtmo.stop()
+    }
+
+    override fun onMachineFinished(type: MachineType) {
+        sounds.machineSounds[type]?.play()
+    }
+
     override fun render(delta: Float) {
         ifKeyPressed(Input.Keys.ESCAPE) { Gdx.app.exit() }
 
         // TODO: remove these debug cheat keys
+        val delta = if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) delta * 50 else delta
         ifKeyPressed(Input.Keys.NUM_9) { state.factory.drillingSpeed = 100f }
         ifKeyPressed(Input.Keys.NUM_0) { state.factory.drillingSpeed = 5f }
         ifKeyPressed(Input.Keys.NUM_1) { state.factory += 100 * ResourceType.IronOre }
@@ -114,7 +132,7 @@ class GameplayScreen : KtxScreen {
                 ?.also { state.upgradeMachine(pos, it) }
         }
 
-        state.update(delta)
+        state.update(delta, this)
         stage.act(delta)
 
         spriteBatch.use(gameplayCamera) {

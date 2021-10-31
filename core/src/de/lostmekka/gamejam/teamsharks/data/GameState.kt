@@ -1,6 +1,7 @@
 package de.lostmekka.gamejam.teamsharks.data
 
 import com.badlogic.gdx.graphics.Color
+import de.lostmekka.gamejam.teamsharks.SoundEventHandler
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerColorVariance
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.dirtLayerScale
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.resourcePrices
@@ -20,8 +21,8 @@ class GameState {
         currentResourceDeposits += resourceDepositBlueprints.values.random().createFunction(1f)
     }
 
-    fun update(deltaTime: Float) {
-        factory.update(deltaTime, currentResourceDeposits)
+    fun update(deltaTime: Float, soundEventHandler: SoundEventHandler) {
+        factory.update(deltaTime, currentResourceDeposits, soundEventHandler)
         val deltaDepth = deltaTime * factory.drillingSpeed
 
         val minDepositDepth = factory.depth - GameConstants.grid.rect.height - 500
