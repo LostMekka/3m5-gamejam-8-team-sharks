@@ -21,7 +21,7 @@ object GameConstants {
     val factoryBaseDrillingSpeed = 5f
     val factoryBaseAwarenessMultiplier = 0.001f
 
-    val bribeCostPerDepth = 0.2f
+    val bribeCostPerDepth = 0.05f
 
     val resourcePrices = mutableMapOf(
         ResourceType.IronOre to 1,
@@ -30,7 +30,7 @@ object GameConstants {
         ResourceType.CopperIngot to 5,
         ResourceType.CopperWire to 5,
         ResourceType.Coal to 1,
-        ResourceType.Oil to 5,
+        ResourceType.Oil to 15,
         ResourceType.SteelBeam to 50,
     )
 }

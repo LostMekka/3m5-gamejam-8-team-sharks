@@ -115,8 +115,8 @@ class GameplayScreen : KtxScreen, GameEventHandler {
 
     private fun onBribeClicked() {
         if (state.money < state.bribeCost) return
-        state.enemyAwareness = 0f
         state.money -= state.bribeCost
+        state.enemyAwareness = 0f
     }
 
     private fun onSellClicked(it: ResourceAmount) {
