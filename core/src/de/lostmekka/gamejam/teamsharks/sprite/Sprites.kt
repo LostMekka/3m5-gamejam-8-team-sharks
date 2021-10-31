@@ -23,11 +23,11 @@ class Sprites {
         .split(27, 27, 50, 1)
     val backgroundEarth = loadTexture("sprites/background/BgEarth.png")
     val factoryAnimation = Animation(
-        0.05f,
+        0.001f,
         loadTexture("sprites/background/Factory.png")
             .split(factoryWidth, factoryHeight, 1, 2)
             .toGdxArray(true),
-    ).also { it.playMode = Animation.PlayMode.LOOP_PINGPONG }
+    ).also { it.playMode = Animation.PlayMode.LOOP }
     val backgroundMined = loadTexture("sprites/background/BgMined.png")
     val resourceDeposits = loadTexture("sprites/resources/Ores.png")
         .split(96, 96, 5, 1)
@@ -42,13 +42,13 @@ class Sprites {
         .split(machineScale, machineScale, 5, 5)
         .let {
             mapOf(
-                MachineType.OreCrusher to it[0],
+                MachineType.OreCrusher to it[0], // TODO: create separate sprite
                 MachineType.DrillModule to it[1],
                 MachineType.MiningModule to it[2],
-                MachineType.Smelter to it[3],
-                MachineType.Furnace to it[3], // TODO: create separate sprite
-                MachineType.WireMaker to it[5],
-                MachineType.ChemLab to it[5], // TODO: create separate sprite
+                MachineType.Smelter to it[0],
+                MachineType.Furnace to it[3],
+                MachineType.WireMaker to it[6],
+                MachineType.ChemLab to it[5],
             )
         }
     val machineErrorSprite = loadTexture("sprites/background/Machines.png")
