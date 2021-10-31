@@ -31,7 +31,7 @@ val machineBlueprints: Map<MachineType, List<MachineBlueprint>> = mapOf(
                         ),
                     ),
                     tier = tier,
-                    speedModifier = 1f / tier,
+                    speedModifier = tier.toFloat(),
                 )
             }
         )

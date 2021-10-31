@@ -16,6 +16,10 @@ class GameState {
     var nextResourceDepositDepth = 0f
     var dirtLayerOffset = 0f
 
+    init {
+        currentResourceDeposits += resourceDepositBlueprints.values.random().createFunction(1f)
+    }
+
     fun update(deltaTime: Float) {
         factory.update(deltaTime, currentResourceDeposits)
         val deltaDepth = deltaTime * factory.drillingSpeed
