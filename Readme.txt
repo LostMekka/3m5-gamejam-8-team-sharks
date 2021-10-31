@@ -7,3 +7,4 @@ https://finalbossblues.itch.io/ashlands-tileset?download
 https://admurin.itch.io/blocky-life
 https://kicked-in-teeth.itch.io/grab-hand
 https://helleworld.itch.io/industrialscifi-top-down-tileset?download
+https://opengameart.org/content/lots-of-free-2d-tiles-and-sprites-by-hyptosis
