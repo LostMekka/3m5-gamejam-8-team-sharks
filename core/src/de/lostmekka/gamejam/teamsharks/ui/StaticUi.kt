@@ -63,8 +63,10 @@ fun createStaticUi(
 
 /// Awareness widget
 
-private class Awareness(min: Float, max: Float, stepSize: Float, vertical: Boolean) :
-    VisProgressBar(min, max, stepSize, vertical) {
+private class Awareness(value: Float) :
+    VisProgressBar(0f, 1f, 0.001f, false) {
+
+    init { this.value = value }
 
     override fun getPrefWidth() = 400f
 }
@@ -72,14 +74,11 @@ private class Awareness(min: Float, max: Float, stepSize: Float, vertical: Boole
 @Scene2dDsl
 @OptIn(ExperimentalContracts::class)
 private inline fun <S> KWidget<S>.awareness(
-    min: Float = 0f,
-    max: Float = 1f,
-    step: Float = 0.001f,
-    vertical: Boolean = false,
+    value: Float,
     init: (@Scene2dDsl VisProgressBar).(S) -> Unit = {}
 ): Awareness {
     contract { callsInPlace(init, InvocationKind.EXACTLY_ONCE) }
-    return actor(Awareness(min, max, step, vertical), init)
+    return actor(Awareness(value), init)
 }
 
 /// Money widget
