@@ -1,7 +1,11 @@
 package de.lostmekka.gamejam.teamsharks.sprite
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.ParticleEffect
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.factoryHeight
 import de.lostmekka.gamejam.teamsharks.data.GameConstants.factoryWidth
@@ -49,6 +53,24 @@ class Sprites {
         }
     val machineErrorSprite = loadTexture("sprites/background/Machines.png")
         .split(machineScale, machineScale, 5, 5)[24]
+
+    val dirtParticlesPool = ParticleEffectPool(
+        ParticleEffect()
+            .also {
+                it.load(
+                    Gdx.files.internal("sprites/background/EarthParticles.p"),
+                    TextureAtlas(Gdx.files.internal("sprites/background/atlas/Earth.atlas"))
+                )
+                it.setEmittersCleanUpBlendFunction(true)
+                it.start()
+            },
+        1,
+        2
+    )
+    val dirtParticles =
+        (0..20).map { x ->
+            dirtParticlesPool.obtain().also { it.setPosition(-750f + (x * 73), -420f) }
+        }
 
     fun disposeSafely() {
         allSprites.disposeSafely()

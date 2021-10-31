@@ -191,6 +191,13 @@ class GameplayScreen : KtxScreen, SoundEventHandler {
                     )
                 }
             }
+            // Draw particles
+            it.color = Color.WHITE
+            sprites.dirtParticles.forEach { effect ->
+                effect.draw(it, delta)
+                if (effect.isComplete)
+                    effect.free()
+            }
         }
 
         shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameplayCamera) {
