@@ -169,12 +169,17 @@ class GameplayUi {
             visTextButton("Story\nand Help") {
                 onClick {
                     stage += scene2d.visDialog("Story and Help") {
-                        centerPosition(stage.width, stage.height)
                         width = 500f
-                        height = 500f
-                        contentTable += visTextArea {
+                        height = 420f
+                        pad(20f, 20f, 0f, 20f)
+                        centerPosition(stage.width, stage.height)
+
+                        contentTable += visLabel("") {
+                            it.pad(30f, 0f, 0f, 0f).fillY()
                             setFillParent(true)
-                            text =
+                            wrap = true
+
+                            txt =
                             """
                             Hello and welcome to this game with weird and cruel world!
                             
@@ -188,8 +193,7 @@ class GameplayUi {
                             """.trimIndent()
                         }
 
-                        visTextButton("Back") {
-                            align(Align.topLeft)
+                        buttonsTable += visTextButton("Back") {
                             onClick {
                                 popup?.also { stage -= it }
                                 popup = null
