@@ -9,6 +9,7 @@ class Sprites {
 
     val resourceIcons = ResourceType.values().associateWith { loadTexture("sprites/resources/$it.png") }
     val backgroundEarth = loadTexture("sprites/background/BgEarth.png")
+    val backgroundFactory = loadTexture("sprites/background/Factory.png")
 
     fun disposeSafely() {
         allSprites.disposeSafely()

@@ -109,6 +109,7 @@ class GameplayScreen : KtxScreen {
 
         spriteBatch.use(gameplayCamera) {
             val dirtSize = dirtLayerScale.toFloat()
+            // Draw background Earth
             for (x in 0..(Gdx.graphics.width / dirtLayerScale)) {
                 for (y in 0..(Gdx.graphics.height / dirtLayerScale + 1)) {
                     it.color = Color.WHITE // TODO: use noise
@@ -121,6 +122,14 @@ class GameplayScreen : KtxScreen {
                     )
                 }
             }
+            // Draw Factory
+            it.draw(
+                sprites.backgroundFactory,
+                grid.rect.getX() - 100f,
+                grid.rect.getY() - 60f,
+                sprites.backgroundFactory.width.toFloat(),
+                sprites.backgroundFactory.height.toFloat(),
+            )
         }
 
         shapeRenderer.use(ShapeRenderer.ShapeType.Filled) {
