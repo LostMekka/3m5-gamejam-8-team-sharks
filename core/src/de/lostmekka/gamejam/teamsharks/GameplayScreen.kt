@@ -117,6 +117,7 @@ class GameplayScreen : KtxScreen, GameEventHandler {
         if (state.money < state.bribeCost) return
         state.money -= state.bribeCost
         state.enemyAwareness = 0f
+        sounds.bribeSound.play()
     }
 
     private fun onSellClicked(it: ResourceAmount) {
@@ -223,12 +224,13 @@ class GameplayScreen : KtxScreen, GameEventHandler {
                 }
             }
             // Draw particles
-            it.color = Color.WHITE
-            sprites.dirtParticles.forEach { effect ->
-                effect.draw(it, delta)
-                if (effect.isComplete)
-                    effect.free()
-            }
+            // TODO: find out why this causes performance issues
+//            it.color = Color.WHITE
+//            sprites.dirtParticles.forEach { effect ->
+//                effect.draw(it, delta)
+//                if (effect.isComplete)
+//                    effect.free()
+//            }
         }
 
         shapeRenderer.use(ShapeRenderer.ShapeType.Line, gameplayCamera) {

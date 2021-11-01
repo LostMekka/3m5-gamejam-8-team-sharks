@@ -178,18 +178,15 @@ class GameplayUi {
                             it.pad(30f, 0f, 0f, 0f).fillY()
                             setFillParent(true)
                             wrap = true
-
-                            txt =
-                            """
-                            Hello and welcome to this game with weird and cruel world!
+                            txt = """
+                            Welcome to this untitled stealth factory game!
                             
-                            The story is as follows: You have build a moving factory, which has a quarry below.
-                            This quarry can automatically dig the ground and extract several ores from the earth chunks.
-                            Suddenly there are other species on the planet besides you, they can hear and feel, what your factory is doing.
-                            Luckily for you - you can pay them with some roubles, so they will be less worried about your stuff.
+                            You have built a moving factory that drills itself through the rock inside a holy crater.
+                            The factory automatically mines material from the resource deposits that you drill by.
+                            Everything your factory does will increase the public's awareness and if the awareness meter fills up, you are caught and the game is over.
+                            Luckily for you, you can bribe the people who notice you with some roubles, so they will be silent for a while longer.
                             
-                            So, sell, what your factory produces, buy new machines, upgrade them, dig into the depths below
-                            and don't forget to Bribe with some roubles to support corruption and dictate your rules!
+                            So sell, what your factory produces, buy new machines, upgrade them and dig into the depths below!
                             """.trimIndent()
                         }
 
